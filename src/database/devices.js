@@ -6,18 +6,18 @@ import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortin
 import Record from '../models/Record.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, type, range, limit, dateDetails) => {
+const get = async (ids, sorting, type, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
     if (type === DEVICES_TYPE_NO_MODEL) {
-      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['deviceManufacturer'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['deviceManufacturer'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['deviceManufacturer'], limit)
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['deviceManufacturer'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['deviceManufacturer'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['deviceManufacturer'], limit, undefined, opts)
     }
     if (type === DEVICES_TYPE_WITH_MODEL) {
       if (sorting === SORTINGS_TOP)
-        return aggregateTopRecords(ids, ['deviceManufacturer', 'deviceName'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['deviceManufacturer', 'deviceName'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['deviceManufacturer', 'deviceName'], limit)
+        return aggregateTopRecords(ids, ['deviceManufacturer', 'deviceName'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['deviceManufacturer', 'deviceName'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['deviceManufacturer', 'deviceName'], limit, undefined, opts)
     }
   })()
 

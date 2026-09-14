@@ -6,11 +6,11 @@ import Record from '../models/Record.js'
 import languageCodes from '../utils/languageCodes.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, range, limit, dateDetails) => {
+const get = async (ids, sorting, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
-    if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['siteLanguage'], range, limit, dateDetails)
-    if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['siteLanguage'], limit)
-    if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['siteLanguage'], limit)
+    if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['siteLanguage'], range, limit, dateDetails, undefined, opts)
+    if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['siteLanguage'], limit, undefined, opts)
+    if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['siteLanguage'], limit, undefined, opts)
   })()
 
   const enhanceId = (id) => {

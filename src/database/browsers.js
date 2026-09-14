@@ -6,18 +6,18 @@ import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortin
 import Record from '../models/Record.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, type, range, limit, dateDetails) => {
+const get = async (ids, sorting, type, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
     if (type === BROWSERS_TYPE_NO_VERSION) {
-      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['browserName'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['browserName'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['browserName'], limit)
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['browserName'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['browserName'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['browserName'], limit, undefined, opts)
     }
     if (type === BROWSERS_TYPE_WITH_VERSION) {
       if (sorting === SORTINGS_TOP)
-        return aggregateTopRecords(ids, ['browserName', 'browserVersion'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['browserName', 'browserVersion'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['browserName', 'browserVersion'], limit)
+        return aggregateTopRecords(ids, ['browserName', 'browserVersion'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['browserName', 'browserVersion'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['browserName', 'browserVersion'], limit, undefined, opts)
     }
   })()
 

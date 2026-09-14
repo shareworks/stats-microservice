@@ -6,17 +6,17 @@ import { SYSTEMS_TYPE_NO_VERSION, SYSTEMS_TYPE_WITH_VERSION } from '../constants
 import Record from '../models/Record.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, type, range, limit, dateDetails) => {
+const get = async (ids, sorting, type, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
     if (type === SYSTEMS_TYPE_NO_VERSION) {
-      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName'], limit)
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName'], limit, undefined, opts)
     }
     if (type === SYSTEMS_TYPE_WITH_VERSION) {
-      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName', 'osVersion'], range, limit, dateDetails)
-      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName', 'osVersion'], limit)
-      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName', 'osVersion'], limit)
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName', 'osVersion'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName', 'osVersion'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName', 'osVersion'], limit, undefined, opts)
     }
   })()
 

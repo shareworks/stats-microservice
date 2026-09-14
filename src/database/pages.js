@@ -5,11 +5,11 @@ import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortin
 import Record from '../models/Record.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, range, limit, dateDetails) => {
+const get = async (ids, sorting, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
-    if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['siteLocation'], range, limit, dateDetails)
-    if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['siteLocation'], limit)
-    if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['siteLocation'], limit)
+    if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['siteLocation'], range, limit, dateDetails, undefined, opts)
+    if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['siteLocation'], limit, undefined, opts)
+    if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['siteLocation'], limit, undefined, opts)
   })()
 
   const enhanceId = (id) => {

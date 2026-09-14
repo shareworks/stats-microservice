@@ -13,39 +13,39 @@ import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortin
 import Record from '../models/Record.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, sorting, type, range, limit, dateDetails) => {
+const get = async (ids, sorting, type, range, limit, dateDetails, opts) => {
   const aggregation = (() => {
     if (sorting === SORTINGS_TOP) {
       if (type === SIZES_TYPE_BROWSER_WIDTH)
-        return aggregateTopRecords(ids, ['browserWidth'], range, limit, dateDetails)
+        return aggregateTopRecords(ids, ['browserWidth'], range, limit, dateDetails, undefined, opts)
       if (type === SIZES_TYPE_BROWSER_HEIGHT)
-        return aggregateTopRecords(ids, ['browserHeight'], range, limit, dateDetails)
+        return aggregateTopRecords(ids, ['browserHeight'], range, limit, dateDetails, undefined, opts)
       if (type === SIZES_TYPE_BROWSER_RESOLUTION)
-        return aggregateTopRecords(ids, ['browserWidth', 'browserHeight'], range, limit, dateDetails)
-      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateTopRecords(ids, ['screenWidth'], range, limit, dateDetails)
+        return aggregateTopRecords(ids, ['browserWidth', 'browserHeight'], range, limit, dateDetails, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateTopRecords(ids, ['screenWidth'], range, limit, dateDetails, undefined, opts)
       if (type === SIZES_TYPE_SCREEN_HEIGHT)
-        return aggregateTopRecords(ids, ['screenHeight'], range, limit, dateDetails)
+        return aggregateTopRecords(ids, ['screenHeight'], range, limit, dateDetails, undefined, opts)
       if (type === SIZES_TYPE_SCREEN_RESOLUTION)
-        return aggregateTopRecords(ids, ['screenWidth', 'screenHeight'], range, limit, dateDetails)
+        return aggregateTopRecords(ids, ['screenWidth', 'screenHeight'], range, limit, dateDetails, undefined, opts)
     }
     if (sorting === SORTINGS_NEW) {
-      if (type === SIZES_TYPE_BROWSER_WIDTH) return aggregateNewRecords(ids, ['browserWidth'], limit)
-      if (type === SIZES_TYPE_BROWSER_HEIGHT) return aggregateNewRecords(ids, ['browserHeight'], limit)
+      if (type === SIZES_TYPE_BROWSER_WIDTH) return aggregateNewRecords(ids, ['browserWidth'], limit, undefined, opts)
+      if (type === SIZES_TYPE_BROWSER_HEIGHT) return aggregateNewRecords(ids, ['browserHeight'], limit, undefined, opts)
       if (type === SIZES_TYPE_BROWSER_RESOLUTION)
-        return aggregateNewRecords(ids, ['browserWidth', 'browserHeight'], limit)
-      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateNewRecords(ids, ['screenWidth'], limit)
-      if (type === SIZES_TYPE_SCREEN_HEIGHT) return aggregateNewRecords(ids, ['screenHeight'], limit)
-      if (type === SIZES_TYPE_SCREEN_RESOLUTION) return aggregateNewRecords(ids, ['screenWidth', 'screenHeight'], limit)
+        return aggregateNewRecords(ids, ['browserWidth', 'browserHeight'], limit, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateNewRecords(ids, ['screenWidth'], limit, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_HEIGHT) return aggregateNewRecords(ids, ['screenHeight'], limit, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_RESOLUTION) return aggregateNewRecords(ids, ['screenWidth', 'screenHeight'], limit, undefined, opts)
     }
     if (sorting === SORTINGS_RECENT) {
-      if (type === SIZES_TYPE_BROWSER_WIDTH) return aggregateRecentRecords(ids, ['browserWidth'], limit)
-      if (type === SIZES_TYPE_BROWSER_HEIGHT) return aggregateRecentRecords(ids, ['browserHeight'], limit)
+      if (type === SIZES_TYPE_BROWSER_WIDTH) return aggregateRecentRecords(ids, ['browserWidth'], limit, undefined, opts)
+      if (type === SIZES_TYPE_BROWSER_HEIGHT) return aggregateRecentRecords(ids, ['browserHeight'], limit, undefined, opts)
       if (type === SIZES_TYPE_BROWSER_RESOLUTION)
-        return aggregateRecentRecords(ids, ['browserWidth', 'browserHeight'], limit)
-      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateRecentRecords(ids, ['screenWidth'], limit)
-      if (type === SIZES_TYPE_SCREEN_HEIGHT) return aggregateRecentRecords(ids, ['screenHeight'], limit)
+        return aggregateRecentRecords(ids, ['browserWidth', 'browserHeight'], limit, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_WIDTH) return aggregateRecentRecords(ids, ['screenWidth'], limit, undefined, opts)
+      if (type === SIZES_TYPE_SCREEN_HEIGHT) return aggregateRecentRecords(ids, ['screenHeight'], limit, undefined, opts)
       if (type === SIZES_TYPE_SCREEN_RESOLUTION)
-        return aggregateRecentRecords(ids, ['screenWidth', 'screenHeight'], limit)
+        return aggregateRecentRecords(ids, ['screenWidth', 'screenHeight'], limit, undefined, opts)
     }
   })()
 
