@@ -1,15 +1,23 @@
-'use strict'
+import { mergeResolvers } from '@graphql-tools/merge'
 
-const { mergeResolvers } = require('graphql-tools')
+import actions from './actions.js'
+import domains from './domains.js'
+import domainStatistics from './domainStatistics.js'
+import events from './events.js'
+import eventStatistics from './eventStatistics.js'
+import facts from './facts.js'
+import permanentTokens from './permanentTokens.js'
+import records from './records.js'
+import tokens from './tokens.js'
 
-module.exports = mergeResolvers([
-	require('./tokens'),
-	require('./permanentTokens'),
-	require('./records'),
-	require('./domains'),
-	require('./events'),
-	require('./actions'),
-	require('./facts'),
-	require('./domainStatistics'),
-	require('./eventStatistics'),
+export default mergeResolvers([
+  tokens,
+  permanentTokens,
+  records,
+  domains,
+  events,
+  actions,
+  facts,
+  domainStatistics,
+  eventStatistics,
 ])

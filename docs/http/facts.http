@@ -1,0 +1,33 @@
+### fetchFacts
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchFacts($id: ID!) {
+  domain(id: $id) {
+    facts {
+      id
+      activeVisitors
+      averageViews {
+        count
+        change
+      }
+      averageDuration {
+        count
+        change
+      }
+      viewsToday
+      viewsMonth
+      viewsYear
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}

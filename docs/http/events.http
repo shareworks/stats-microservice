@@ -1,0 +1,114 @@
+### createEvent
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation createEvent($input: CreateEventInput!) {
+  createEvent(input: $input) {
+    success
+    payload {
+      id
+      title
+      type
+    }
+  }
+}
+
+{
+  "input": {
+    "title": "Example Event",
+    "type": "TOTAL_CHART"
+  }
+}
+
+### updateEvent
+
+# @prompt accessToken
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation updateEvent($id: ID!, $input: UpdateEventInput!) {
+  updateEvent(id: $id, input: $input) {
+    success
+    payload {
+      id
+      title
+      type
+    }
+  }
+}
+
+{
+  "id": "{{eventId}}",
+  "input": {
+    "title": "Updated Event",
+    "type": "TOTAL_LIST"
+  }
+}
+
+### fetchEvents
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchEvents {
+  events {
+    id
+    title
+    type
+  }
+}
+
+### fetchEvent
+
+# @prompt accessToken
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchEvent($id: ID!) {
+  event(id: $id) {
+    id
+    title
+    type
+  }
+}
+
+{
+  "id": "{{eventId}}"
+}
+
+### deleteEvent
+
+# @prompt accessToken
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation deleteEvent($id: ID!) {
+  deleteEvent(id: $id) {
+    success
+  }
+}
+
+{
+  "id": "{{eventId}}"
+}

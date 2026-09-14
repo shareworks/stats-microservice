@@ -1,0 +1,52 @@
+### chart
+
+# @prompt accessToken
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchEventChart($id: ID!) {
+  event(id: $id) {
+    statistics {
+      id
+      chart(type: TOTAL, interval: DAILY) {
+        value
+        count
+      }
+    }
+  }
+}
+
+{
+  "id": "{{eventId}}"
+}
+
+### list
+
+# @prompt accessToken
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchEventList($id: ID!) {
+  event(id: $id) {
+    statistics {
+      id
+      list(sorting: TOP, type: TOTAL, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{eventId}}"
+}

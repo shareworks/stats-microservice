@@ -1,0 +1,108 @@
+### createPermanentToken
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation createPermanentToken($input: CreatePermanentTokenInput!) {
+  createPermanentToken(input: $input) {
+    success
+    payload {
+      id
+      title
+    }
+  }
+}
+
+{
+  "input": {
+    "title": "Example Token"
+  }
+}
+
+### updatePermanentToken
+
+# @prompt accessToken
+# @prompt permanentTokenId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation updatePermanentToken($id: ID!, $input: UpdatePermanentTokenInput!) {
+  updatePermanentToken(id: $id, input: $input) {
+    success
+    payload {
+      id
+      title
+    }
+  }
+}
+
+{
+  "id": "{{permanentTokenId}}",
+  "input": {
+    "title": "Updated Token"
+  }
+}
+
+### fetchPermanentTokens
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchPermanentTokens {
+  permanentTokens {
+    id
+    title
+  }
+}
+
+### fetchPermanentToken
+
+# @prompt accessToken
+# @prompt permanentTokenId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchPermanentToken($id: ID!) {
+  permanentToken(id: $id) {
+    id
+    title
+  }
+}
+
+{
+  "id": "{{permanentTokenId}}"
+}
+
+### deletePermanentToken
+
+# @prompt accessToken
+# @prompt permanentTokenId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation deletePermanentToken($id: ID!) {
+  deletePermanentToken(id: $id) {
+    success
+  }
+}
+
+{
+  "id": "{{permanentTokenId}}"
+}

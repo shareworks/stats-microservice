@@ -1,32 +1,32 @@
-import { createElement as h } from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { useHotkeys } from 'react-hotkeys-hook'
+import PropTypes from 'prop-types'
+import { createElement as h } from 'react'
 
-import commonModalProps from '../../utils/commonModalProps'
+import useHotkey from '../../hooks/useHotkey.js'
+import commonModalProps from '../../utils/commonModalProps.js'
 
 const Modal = (props) => {
-	useHotkeys('esc', props.closeModal, {
-		filter: () => props.current === true,
-		enableOnTags: [ 'INPUT', 'SELECT', 'TEXTAREA' ],
-	})
+  useHotkey('escape', props.closeModal, {
+    enabled: props.current === true,
+    enabledOnInput: true,
+  })
 
-	return (
-		h('div', {
-			className: classNames({
-				modal: true,
-				visible: props.visible === true,
-			}),
-		},
-			h('div', { className: 'modal__inner' }, props.children),
-		)
-	)
+  return h(
+    'div',
+    {
+      className: classNames({
+        modal: true,
+        visible: props.visible === true,
+      }),
+    },
+    h('div', { className: 'modal__inner' }, props.children),
+  )
 }
 
 Modal.propTypes = {
-	...commonModalProps,
-	visible: PropTypes.bool.isRequired,
-	children: PropTypes.node.isRequired,
+  ...commonModalProps,
+  visible: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default Modal

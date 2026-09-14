@@ -1,84 +1,82 @@
-'use strict'
-
-const KnownError = require('../utils/KnownError')
-const messages = require('../utils/messages')
-const events = require('../database/events')
-const actions = require('../database/actions')
+import * as actions from '../database/actions.js'
+import * as events from '../database/events.js'
+import KnownError from '../utils/KnownError.js'
+import messages from '../utils/messages.js'
 
 const polish = (obj) => {
-	return Object.entries(obj).reduce((acc, [ key, value ]) => {
-		value = typeof value === 'string' ? value.trim() : value
-		value = value == null ? undefined : value
-		value = value === '' ? undefined : value
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    value = typeof value === 'string' ? value.trim() : value
+    value = value == null ? undefined : value
+    value = value === '' ? undefined : value
 
-		acc[key] = value
-		return acc
-	}, {})
+    acc[key] = value
+    return acc
+  }, {})
 }
 
-module.exports = {
-	Mutation: {
-		createAction: async (parent, { eventId, input }, { isIgnored }) => {
-			// Ignore your own actions when logged in
-			if (isIgnored === true) {
-				return {
-					success: true,
-					payload: {
-						id: '88888888-8888-8888-8888-888888888888',
-					},
-				}
-			}
+export default {
+  Mutation: {
+    createAction: async (parent, { eventId, input }, { isIgnored }) => {
+      // Ignore your own actions when logged in
+      if (isIgnored === true) {
+        return {
+          success: true,
+          payload: {
+            id: '88888888-8888-8888-8888-888888888888',
+          },
+        }
+      }
 
-			const data = polish({ ...input, eventId })
+      const data = polish({ ...input, eventId })
 
-			const event = await events.get(eventId)
+      const event = await events.get(eventId)
 
-			if (event == null) throw new KnownError('Unknown event')
+      if (event == null) throw new KnownError('Unknown event')
 
-			let entry
+      let entry
 
-			try {
-				entry = await actions.add(data)
-			} catch (error) {
-				if (error.name === 'ValidationError') {
-					throw new KnownError(messages(error.errors))
-				}
+      try {
+        entry = await actions.add(data)
+      } catch (error) {
+        if (error.name === 'ValidationError') {
+          throw new KnownError(messages(error.errors))
+        }
 
-				throw error
-			}
+        throw error
+      }
 
-			return {
-				success: true,
-				payload: entry,
-			}
-		},
-		updateAction: async (parent, { id, input }, { isIgnored }) => {
-			// Ignore your own actions when logged in
-			if (isIgnored === true) {
-				return {
-					success: true,
-				}
-			}
+      return {
+        success: true,
+        payload: entry,
+      }
+    },
+    updateAction: async (parent, { id, input }, { isIgnored }) => {
+      // Ignore your own actions when logged in
+      if (isIgnored === true) {
+        return {
+          success: true,
+        }
+      }
 
-			let entry
+      let entry
 
-			try {
-				entry = await actions.update(id, input)
-			} catch (error) {
-				if (error.name === 'ValidationError') {
-					throw new KnownError(messages(error.errors))
-				}
+      try {
+        entry = await actions.update(id, input)
+      } catch (error) {
+        if (error.name === 'ValidationError') {
+          throw new KnownError(messages(error.errors))
+        }
 
-				throw error
-			}
+        throw error
+      }
 
-			if (entry == null) {
-				throw new KnownError('Unknown action')
-			}
+      if (entry == null) {
+        throw new KnownError('Unknown action')
+      }
 
-			return {
-				success: true,
-			}
-		},
-	},
+      return {
+        success: true,
+      }
+    },
+  },
 }

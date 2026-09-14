@@ -21,7 +21,6 @@ coverage
 .nyc_output
 
 # Package Managers
-package-lock.json
 npm-debug.log
 node_modules
 
@@ -29,7 +28,7 @@ node_modules
 /data
 .env
 
-# Dist folder
+# Build output
 dist/*
 !dist/favicon.ico
 !dist/index.css

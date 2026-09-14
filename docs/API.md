@@ -11,7 +11,7 @@ Here are a few resources to help you get started with GraphQL:
 
 GraphQL Playground is a graphical, interactive, in-browser GraphQL IDE. It allows you to play and experiment with the API of Ackee.
 
-Simply run Ackee with `NODE_ENV` set to `development` and visit the `/api` playground in your browser. You can do so by adding `NODE_ENV=development` to the environment of your `docker-compose.yml` or by using `yarn start:dev`. Only use this mode on your local machine as Ackee runs slower when in development mode.
+Simply run Ackee with `NODE_ENV` set to `development` and visit the `/api` playground in your browser. You can do so by adding `NODE_ENV=development` to the environment of your `docker-compose.yml` or by using `npm run dev`. Only use this mode on your local machine as Ackee runs slower when in development mode.
 
 Try the [🔮 live playground](https://demo.ackee.electerious.com/api) of the Ackee demo.
 
@@ -25,11 +25,11 @@ The following mutation returns a new token `id` that should be used for authenti
 
 ```graphql
 mutation createToken($input: CreateTokenInput!) {
-	createToken(input: $input) {
-		payload {
-			id
-		}
-	}
+  createToken(input: $input) {
+    payload {
+      id
+    }
+  }
 }
 ```
 
@@ -42,7 +42,7 @@ mutation createToken($input: CreateTokenInput!) {
 }
 ```
 
-The token is valid for one day and will be renewed on every request made with it. You can modify the TTL (time to live) in [the options](Options.md#ttl). [Create a permanent token]() if you need a token that doesn't expire.
+The token is valid for one day and will be renewed on every request made with it. You can modify the TTL (time to live) in [the options](Options.md#ttl). [Create a permanent token](#creating-a-permanent-token) if you need a token that doesn't expire.
 
 ### Use a token
 
@@ -62,11 +62,11 @@ You can create permanent tokens in the settings of Ackee or via the API. Creatin
 
 ```graphql
 mutation createPermanentToken($input: CreatePermanentTokenInput!) {
-	createPermanentToken(input: $input) {
-		payload {
-			id
-		}
-	}
+  createPermanentToken(input: $input) {
+    payload {
+      id
+    }
+  }
 }
 ```
 
@@ -108,10 +108,10 @@ Queries are used to receive data. Here are a few examples.
 
 ```graphql
 query getDomains {
-	domains {
-		id
-		title
-	}
+  domains {
+    id
+    title
+  }
 }
 ```
 
@@ -119,10 +119,10 @@ query getDomains {
 
 ```graphql
 query getDomain($id: ID!) {
-	domain(id: $id) {
-		id
-		title
-	}
+  domain(id: $id) {
+    id
+    title
+  }
 }
 ```
 
@@ -136,16 +136,16 @@ query getDomain($id: ID!) {
 
 ```graphql
 query getDomainsFacts {
-	domains {
-		facts {
-			activeVisitors
-			averageViews
-			averageDuration
-			viewsToday
-			viewsMonth
-			viewsYear
-		}
-	}
+  domains {
+    facts {
+      activeVisitors
+      averageViews
+      averageDuration
+      viewsToday
+      viewsMonth
+      viewsYear
+    }
+  }
 }
 ```
 
@@ -153,53 +153,53 @@ query getDomainsFacts {
 
 ```graphql
 query getDomainsStatistics {
-	domains {
-		statistics {
-			durations(interval: DAILY) {
-				id
-				count
-			}
-			views(interval: YEARLY, type: UNIQUE) {
-				id
-				count
-			}
-			languages(sorting: TOP) {
-				id
-				count
-				created
-			}
-			browsers(sorting: TOP, type: WITH_VERSION) {
-				id
-				count
-				created
-			}
-			devices(sorting: TOP, type: WITH_MODEL) {
-				id
-				count
-				created
-			}
-			pages(sorting: TOP) {
-				id
-				count
-				created
-			}
-			referrers(sorting: TOP, type: WITH_SOURCE) {
-				id
-				count
-				created
-			}
-			sizes(sorting: TOP, type: SCREEN_RESOLUTION) {
-				id
-				count
-				created
-			}
-			systems(sorting: TOP, type: NO_VERSION) {
-				id
-				count
-				created
-			}
-		}
-	}
+  domains {
+    statistics {
+      durations(interval: DAILY) {
+        id
+        count
+      }
+      views(interval: YEARLY, type: UNIQUE) {
+        id
+        count
+      }
+      languages(sorting: TOP) {
+        id
+        count
+        created
+      }
+      browsers(sorting: TOP, type: WITH_VERSION) {
+        id
+        count
+        created
+      }
+      devices(sorting: TOP, type: WITH_MODEL) {
+        id
+        count
+        created
+      }
+      pages(sorting: TOP) {
+        id
+        count
+        created
+      }
+      referrers(sorting: TOP, type: WITH_SOURCE) {
+        id
+        count
+        created
+      }
+      sizes(sorting: TOP, type: SCREEN_RESOLUTION) {
+        id
+        count
+        created
+      }
+      systems(sorting: TOP, type: NO_VERSION) {
+        id
+        count
+        created
+      }
+    }
+  }
 }
 ```
 
@@ -207,20 +207,20 @@ query getDomainsStatistics {
 
 ```graphql
 query getEvents {
-	events {
-		id
-		title
-		statistics {
-			chart(interval: DAILY, type: TOTAL) {
-				id
-				count
-			}
-			list(sorting: TOP, type: TOTAL) {
-				id
-				count
-			}
-		}
-	}
+  events {
+    id
+    title
+    statistics {
+      chart(interval: DAILY, type: TOTAL) {
+        id
+        count
+      }
+      list(sorting: TOP, type: TOTAL) {
+        id
+        count
+      }
+    }
+  }
 }
 ```
 
@@ -239,12 +239,12 @@ Mutations are used to add, update or delete data. Here are a few examples.
 
 ```graphql
 mutation createDomain($input: CreateDomainInput!) {
-	createDomain(input: $input) {
-		payload {
-			id
-			title
-		}
-	}
+  createDomain(input: $input) {
+    payload {
+      id
+      title
+    }
+  }
 }
 ```
 
@@ -260,9 +260,9 @@ mutation createDomain($input: CreateDomainInput!) {
 
 ```graphql
 mutation deleteDomain($id: ID!) {
-	deleteDomain(id: $id) {
-		success
-	}
+  deleteDomain(id: $id) {
+    success
+  }
 }
 ```
 
@@ -276,11 +276,11 @@ mutation deleteDomain($id: ID!) {
 
 ```graphql
 mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
-	createRecord(domainId: $domainId, input: $input) {
-		payload {
-			id
-		}
-	}
+  createRecord(domainId: $domainId, input: $input) {
+    payload {
+      id
+    }
+  }
 }
 ```
 
@@ -297,12 +297,12 @@ mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
 
 ```graphql
 mutation createEvent($input: CreateEventInput!) {
-	createEvent(input: $input) {
-		payload {
-			id
-			title
-		}
-	}
+  createEvent(input: $input) {
+    payload {
+      id
+      title
+    }
+  }
 }
 ```
 
@@ -319,11 +319,11 @@ mutation createEvent($input: CreateEventInput!) {
 
 ```graphql
 mutation createAction($eventId: ID!, $input: CreateActionInput!) {
-	createAction(eventId: $eventId, input: $input) {
-		payload {
-			id
-		}
-	}
+  createAction(eventId: $eventId, input: $input) {
+    payload {
+      id
+    }
+  }
 }
 ```
 
@@ -341,11 +341,11 @@ mutation createAction($eventId: ID!, $input: CreateActionInput!) {
 
 ```graphql
 mutation updateAction($id: ID!, $input: UpdateActionInput!) {
-	updateAction(id: $id, input: $input) {
-		payload {
-			id
-		}
-	}
+  updateAction(id: $id, input: $input) {
+    payload {
+      id
+    }
+  }
 }
 ```
 

@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const devices = require('../../src/constants/devices')
+import * as devices from '../../src/constants/devices.js'
 
 test('is an object', (t) => {
-	t.is(typeof devices, 'object')
+  t.is(typeof devices, 'object')
 })

@@ -4,19 +4,119 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.6.0] - 2026-04-08
 
-This release contains a refactored front-end that takes advantage of the GraphQL API that has been in Ackee since version 2. Better caching and instant domain, event and permanent token updates.
+Code refactoring, internal improvements and dependency updates to bring the codebase up to date with the latest versions and features of Node.js and MongoDB (fixes #377).
+
+### Changed
+
+- Ackee now requires Node.js 24 or newer
+
+### Fixed
+
+- Vercel deployments and serverless functions (#401, #385)
+
+## [3.5.1] - 2025-11-19
+
+### Changed
+
+- Several dependencies have been updated to their latest versions to bring in security patches and improvements
+
+### Fixed
+
+- `ackee-tracker` has been updated to fix an issue where visits were not recorded when the website had an empty `document.referrer`. You might have seen lower visit counts since version 3.5.0 when your website had no referrer, e.g., when visiting it directly or via bookmarks.
+
+## [3.5.0] - 2025-11-13
+
+Small fixes, internal improvements and dependency updates.
+
+### Changed
+
+- Ackee now requires Node.js 22 or newer (fixes #343)
+- The official Docker image is now based on Node.js 22 (fixes #343)
+- Netlify builds use Node.js 22 (fixes #343)
+- URLs without protocols (e.g., `example.com`) are now rejected by the API. The official `ackee-tracker` client sends `window.location.href` with protocol, so this only affects custom API clients sending malformed URLs as `siteReferrer` and `siteLocation`.
+
+### Fixed
+
+- ReDOS vulnerability of is_js, the request-ip dependency (thanks @marek629, #392)
+
+## [3.4.2] - 2022-12-17
+
+## Changed
+
+- Adjust Docker to run as non-root user (thanks @rjhancock, #309, #337)
+
+## Fixed
+
+- Rendering issue in Safari
+
+## [3.4.1] - 2022-05-21
+
+## Fixed
+
+- Build failing on Netlify (thanks @adityatelange, #333)
+- Vercel not attaching CORS headers because of unsupported `multiValueHeaders` (thanks @birjj, #330)
+- `ACKEE_AUTO_ORIGIN` not attaching CORS headers (thanks @birjj, #330)
+
+## [3.4.0] - 2022-05-15
+
+### Added
+
+- Support for Node.js 17 (#302)
+- Cache preflight requests (via `Access-Control-Max-Age`) (#261)
+- Automatically add CORS headers for domains that have fully qualified domain names as titles ([`ACKEE_AUTO_ORIGIN`](docs/Options.md)) (#271)
+
+### Changed
+
+- MongoDB 4.4 or newer is now required, but older versions still may work
+
+## [3.3.1] - 2022-01-16
+
+You will see a lower unique visitor count after updating. This release contains a fix for the unique visitor count and anonymisation that was broken since 3.2.0. The recorded visits were still anonymous, but Ackee tracked the visit path of each visitor. Data that Ackee normally removes. Data tracked since 3.2.0 are all counted as unique, even if they were not.
+
+### Fixed
+
+- Unique visitor count and anonymisation (#304)
+
+## [3.3.0] - 2021-12-04
+
+### Added
+
+- Docker support for linux/arm64 and linux/arm/v7 (#298)
+
+## [3.2.0] - 2021-09-18
+
+### Changed
+
+- Switch to official Node.js Docker image
+- Updated dependencies, including mongoose (thanks @suda, #291)
+
+## [3.1.1] - 2021-06-27
+
+### Fixed
+
+- "Float cannot represent non numeric value: NaN" when visiting a new installation of Ackee
+
+## [3.1.0] - 2021-06-27
+
+> ⚠️ Contains breaking changes in the GraphQL API
+
+This release contains a refactored front-end that takes advantage of the GraphQL API that has been a part of Ackee since version 2. Better caching and instant domain, event and permanent token updates. And: An active visitor counter that updated periodically without reloading the UI.
 
 ### Added
 
 - Views and duration details: Click on a chart bar on the overview and insights page to see more details
+- Percentage changes of average views and duration in the facts panel
+- Active visitors counter updates periodically without reloading the UI
+- Tooltips for text in lists (#266)
 
 ### Changed
 
 - `DomainStatistics` and `EventStatistics` (GraphQL API) now contain a unique id field
 - `View`, `Duration` and `EventChartEntry` (GraphQL API) now contain their date in a `value` field in the format: YYYY, YYYY-MM or YYYY-MM-DD. The format depends on the chosen interval.
 - `DomainStatistics` and `EventStatistics` (GraphQL API) now contain a unique id in the `id` field. The previous data has been renamed to `value`, because it was never unique and therefore shouldn't be named `id`.
+- `averageViews` and `averageDuration` (GraphQL API) are now types and don't contain the values directly
 
 ## [3.0.6] - 2021-04-02
 
@@ -283,7 +383,7 @@ The first major back-end and front-end rewrite of Ackee with new API, dashboard,
 ### Added
 
 - Filter bar to quickly change what you're viewing
-- [Documention website](https://docs.ackee.electerious.com/#/)
+- [Documentation website](https://docs.ackee.electerious.com/#/)
 - Browsers, devices and operating systems are now visible in the UI (thanks [@RomainCscn](https://github.com/RomainCscn))
 - Browser and screen resolutions allow you to view width and height combined (thanks [@RomainCscn](https://github.com/RomainCscn))
 - View the last 24 hours, 7 days, last 30 days or the top entries of all time (thanks [@RomainCscn](https://github.com/RomainCscn))

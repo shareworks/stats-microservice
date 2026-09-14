@@ -1,31 +1,31 @@
 import { gql } from '@apollo/client'
 
-import useQuery from '../../utils/useQuery'
-import sizesField from '../../fragments/sizesField'
-import enhanceSizes from '../../../enhancers/enhanceSizes'
+import enhanceSizes from '../../../enhancers/enhanceSizes.js'
+import sizesField from '../../fragments/sizesField.js'
+import useQuery from '../../utils/useQuery.js'
 
 const QUERY = gql`
-	query fetchSizes($id: ID!, $sorting: Sorting!, $type: SizeType!, $range: Range) {
-		domain(id: $id) {
-			id
-			statistics {
-				id
-				...sizesField
-			}
-		}
-	}
+  query fetchSizes($id: ID!, $sorting: Sorting!, $type: SizeType!, $range: Range) {
+    domain(id: $id) {
+      id
+      statistics {
+        id
+        ...sizesField
+      }
+    }
+  }
 
-	${ sizesField }
+  ${sizesField}
 `
 
 export default (id, filters) => {
-	const selector = (data) => data?.domain.statistics.sizes
-	const enhancer = enhanceSizes
+  const selector = (data) => data?.domain.statistics.sizes
+  const enhancer = enhanceSizes
 
-	return useQuery(QUERY, selector, enhancer, {
-		variables: {
-			...filters,
-			id,
-		},
-	})
+  return useQuery(QUERY, selector, enhancer, {
+    variables: {
+      ...filters,
+      id,
+    },
+  })
 }

@@ -1,45 +1,47 @@
-import { useMutation, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 
-import deleteIdModify from '../../utils/deleteIdModify'
+import deleteIdModify from '../../utils/deleteIdModify.js'
 
 const MUTATION = gql`
-	mutation deleteEvent($id: ID!) {
-		deleteEvent(id: $id) {
-			success
-		}
-	}
+  mutation deleteEvent($id: ID!) {
+    deleteEvent(id: $id) {
+      success
+    }
+  }
 `
 
 const update = (id) => (cache, result) => {
-	const success = result.data.deleteEvent.success
-	if (success === false) return
+  const success = result.data.deleteEvent.success
+  if (success === false) return
 
-	cache.modify({
-		fields: {
-			events: deleteIdModify(id),
-		},
-	})
+  cache.modify({
+    fields: {
+      events: deleteIdModify(id),
+    },
+  })
 }
 
 export default (id) => {
-	const [ mutate, { loading, error }] = useMutation(MUTATION, {
-		variables: {
-			id,
-		},
-	})
+  const [mutate, { loading, error }] = useMutation(MUTATION, {
+    variables: {
+      id,
+    },
+  })
 
-	return {
-		mutate: (options) => mutate({
-			update: update(id),
-			optimisticResponse: {
-				deleteEvent: {
-					success: true,
-					__typename: 'DeleteEventPayload',
-				},
-			},
-			...options,
-		}),
-		loading,
-		error,
-	}
+  return {
+    mutate: (options) =>
+      mutate({
+        update: update(id),
+        optimisticResponse: {
+          deleteEvent: {
+            success: true,
+            __typename: 'DeleteEventPayload',
+          },
+        },
+        ...options,
+      }),
+    loading,
+    error,
+  }
 }

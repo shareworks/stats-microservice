@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const views = require('../../src/constants/views')
+import * as views from '../../src/constants/views.js'
 
 test('is an object', (t) => {
-	t.is(typeof views, 'object')
+  t.is(typeof views, 'object')
 })

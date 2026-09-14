@@ -1,36 +1,30 @@
-'use strict'
+import { getClientIp } from 'request-ip'
 
-const { getClientIp } = require('request-ip')
+import config from './config.js'
+import createDate from './createDate.js'
+import { isSet } from './ignoreCookie.js'
+import isAuthenticated from './isAuthenticated.js'
 
-const config = require('./config')
-const isAuthenticated = require('./isAuthenticated')
-const createDate = require('./createDate')
-const ignoreCookie = require('./ignoreCookie')
-
-const createServerlessContext = (integrationContext) => {
-	return createContext(integrationContext.event.headers['client-ip'], integrationContext.event.headers)
+export const createServerlessContext = (request) => {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip')
+  const headers = Object.fromEntries(request.headers)
+  return createContext(ip, headers)
 }
 
-const createMicroContext = (integrationContext) => {
-	return createContext(getClientIp(integrationContext.req), integrationContext.req.headers)
+export const createExpressContext = ({ req }) => {
+  return createContext(getClientIp(req), req.headers)
 }
 
 const createContext = async (ip, headers) => {
-	return {
-		isDemoMode: config.isDemoMode,
-		isAuthenticated: await isAuthenticated(headers['authorization'], config.ttl),
-		isIgnored: ignoreCookie.isSet(headers['cookie']),
-		dateDetails: createDate(headers['time-zone']),
-		userAgent: headers['user-agent'],
-		ip,
-		// Variables used by apollo-server-plugin-http-headers
-		// See: https://github.com/b2a3e8/apollo-server-plugin-http-headers
-		setCookies: [],
-		setHeaders: [],
-	}
-}
-
-module.exports = {
-	createServerlessContext,
-	createMicroContext,
+  return {
+    isDemoMode: config.isDemoMode,
+    isAuthenticated: await isAuthenticated(headers['authorization'], config.ttl),
+    isIgnored: isSet(headers['cookie']),
+    dateDetails: createDate(headers['time-zone']),
+    userAgent: headers['user-agent'],
+    ip,
+    // Variables used by to set and read cookies and headers
+    setCookies: [],
+    setHeaders: [],
+  }
 }

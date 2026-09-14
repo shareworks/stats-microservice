@@ -1,27 +1,32 @@
-'use strict'
+import test from 'ava'
+import mockedEnv from 'mocked-env'
+import listen from 'test-listen'
 
-const test = require('ava')
-const listen = require('test-listen')
-const fetch = require('node-fetch')
-const mockedEnv = require('mocked-env')
-
-const server = require('../src/server')
+import server from '../src/server.js'
+import { job as saltJob } from '../src/utils/salt.js'
+import { api } from './_utils.js'
 
 const base = listen(server)
 
+test.after.always(() => {
+  server.close()
+  saltJob.cancel()
+})
+
 test('return cors headers if env var specifies one', async (t) => {
-	const url = new URL('/api', await base)
+  const origin = new URL(await base).origin
 
-	const restore = mockedEnv({
-		ACKEE_ALLOW_ORIGIN: url.origin,
-	})
+  const restore = mockedEnv({
+    ACKEE_ALLOW_ORIGIN: origin,
+  })
 
-	const { headers } = await fetch(url.href)
+  const { headers } = await api(base, { query: '{ __typename }' }, null, { Origin: origin })
 
-	t.is(headers.get('Access-Control-Allow-Origin'), url.origin)
-	t.is(headers.get('Access-Control-Allow-Methods'), 'GET, POST, PATCH, OPTIONS')
-	t.is(headers.get('Access-Control-Allow-Headers'), 'Content-Type, Authorization, Time-Zone')
-	t.is(headers.get('Access-Control-Allow-Credentials'), 'true')
+  t.is(headers.get('Access-Control-Allow-Origin'), origin)
+  t.is(headers.get('Access-Control-Allow-Methods'), 'GET, POST, PATCH, OPTIONS')
+  t.is(headers.get('Access-Control-Allow-Headers'), 'Content-Type, Authorization, Time-Zone')
+  t.is(headers.get('Access-Control-Allow-Credentials'), 'true')
+  t.is(headers.get('Access-Control-Max-Age'), '3600')
 
-	restore()
+  restore()
 })

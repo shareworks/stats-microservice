@@ -1,6 +1,6 @@
 # SSL and HTTPS
 
-Ackee runs a simple server that doesn't support TSL/SSL. This means it's not possible to directly connect via HTTPS. It's recommended to use a reverse proxy instead. This document explains how.
+Ackee runs a simple server that doesn't support TLS/SSL. This means it's not possible to directly connect via HTTPS. It's recommended to use a reverse proxy instead. This document explains how.
 
 ## What is a reverse proxy?
 
@@ -8,7 +8,7 @@ Ackee runs a simple server that doesn't support TSL/SSL. This means it's not pos
 
 A reverse proxy makes it easy for you to run Ackee on your server along with other services. It also allows you to secure connections using TLS/SSL.
 
-I highly recommend [this article](https://medium.com/intrinsic/why-should-i-use-a-reverse-proxy-if-node-js-is-production-ready-5a079408b2ca) if you want to lean more about reverse proxies.
+I highly recommend [this article](https://medium.com/intrinsic/why-should-i-use-a-reverse-proxy-if-node-js-is-production-ready-5a079408b2ca) if you want to learn more about reverse proxies.
 
 ## Example configurations
 
@@ -20,7 +20,7 @@ I highly recommend [this article](https://medium.com/intrinsic/why-should-i-use-
 
 #### Recommended configuration
 
-This configuration redirects all requests to the non-www domain `example.com`, secures connections using TSL/SSL and allows CORS requests from a list of known domains.
+This configuration redirects all requests to the non-www domain `example.com`, secures connections using TLS/SSL and allows CORS requests from a list of known domains.
 
 > 👉 The CORS headers are required so your sites can send data to Ackee, even when their domain is different to the one Ackee uses.
 
@@ -80,6 +80,7 @@ server {
         add_header          Access-Control-Allow-Methods "GET, POST, PATCH, OPTIONS" always;
         add_header          Access-Control-Allow-Headers "Content-Type, Authorization, Time-Zone" always;
         add_header          Access-Control-Allow-Credentials "true" always;
+        add_header          Access-Control-Max-Age "3600" always;
         add_header          Strict-Transport-Security "max-age=31536000" always;
         add_header          X-Frame-Options deny;
         proxy_pass          http://localhost:3000;
@@ -95,7 +96,7 @@ server {
 
 #### Single domain configuration
 
-This configuration secures all connections using TSL/SSL and allows `https://example.com` to send data to `https://ackee.example.com`.
+This configuration secures all connections using TLS/SSL and allows `https://example.com` to send data to `https://ackee.example.com`.
 
 > ℹ️ This configuration only allows requests from a single domain. Take a look at our [recommended configuration](#recommended-configuration) if you want to allow requests from multiple domains or use the [insecure wildcard configuration](#insecure-wildcard-configuration).
 
@@ -116,6 +117,7 @@ server {
         add_header          Access-Control-Allow-Methods "GET, POST, PATCH, OPTIONS" always;
         add_header          Access-Control-Allow-Headers "Content-Type, Authorization, Time-Zone" always;
         add_header          Access-Control-Allow-Credentials "true" always;
+        add_header          Access-Control-Max-Age "3600" always;
         add_header          Strict-Transport-Security "max-age=31536000" always;
         add_header          X-Frame-Options deny;
         proxy_pass          http://localhost:3000;
@@ -149,6 +151,7 @@ server {
         add_header          Access-Control-Allow-Origin "*" always;
         add_header          Access-Control-Allow-Methods "GET, POST, PATCH, OPTIONS" always;
         add_header          Access-Control-Allow-Headers "Content-Type, Authorization, Time-Zone" always;
+        add_header          Access-Control-Max-Age "3600" always;
         add_header          Strict-Transport-Security "max-age=31536000" always;
         add_header          X-Frame-Options deny;
         proxy_pass          http://localhost:3000;

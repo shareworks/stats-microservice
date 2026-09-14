@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const ranges = require('../../src/constants/ranges')
+import * as ranges from '../../src/constants/ranges.js'
 
 test('is an object', (t) => {
-	t.true(typeof ranges === 'object')
+  t.true(typeof ranges === 'object')
 })

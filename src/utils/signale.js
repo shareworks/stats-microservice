@@ -1,7 +1,7 @@
-'use strict'
+import signaleModule from 'signale'
 
-const { Signale } = require('signale')
+const { Signale } = signaleModule
 
-module.exports = new Signale({
-	scope: 'Ackee',
+export default new Signale({
+  scope: 'Ackee',
 })

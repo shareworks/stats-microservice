@@ -1,12 +1,14 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
+import salt, { job } from '../../src/utils/salt.js'
 
-const salt = require('../../src/utils/salt')
+test.after.always(() => {
+  job.cancel()
+})
 
 test('return same result as long as it is the same day', (t) => {
-	const a = salt()
-	const b = salt()
+  const a = salt()
+  const b = salt()
 
-	t.is(a, b)
+  t.is(a, b)
 })

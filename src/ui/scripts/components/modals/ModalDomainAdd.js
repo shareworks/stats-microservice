@@ -1,80 +1,90 @@
 import { createElement as h } from 'react'
 
-import Input from '../Input'
-import Label from '../Label'
-import Spinner from '../Spinner'
-import Spacer from '../Spacer'
+import Input from '../Input.js'
+import Label from '../Label.js'
+import Spacer from '../Spacer.js'
+import Spinner from '../Spinner.js'
 
-import useCreateDomain from '../../api/hooks/domains/useCreateDomain'
-import useInputs from '../../hooks/useInputs'
-import commonModalProps from '../../utils/commonModalProps'
-import shortId from '../../utils/shortId'
+import useCreateDomain from '../../api/hooks/domains/useCreateDomain.js'
+import useInputs from '../../hooks/useInputs.js'
+import commonModalProps from '../../utils/commonModalProps.js'
+import shortId from '../../utils/shortId.js'
 
 const ModalDomainAdd = (props) => {
-	const createDomain = useCreateDomain()
+  const createDomain = useCreateDomain()
 
-	const loading = createDomain.loading === true
+  const loading = createDomain.loading === true
 
-	const [ inputs, onInputChange ] = useInputs({
-		title: '',
-	})
+  const [inputs, onInputChange] = useInputs({
+    title: '',
+  })
 
-	const onSubmit = async (e) => {
-		e.preventDefault()
-		await createDomain.mutate({
-			variables: {
-				input: inputs,
-			},
-		})
-		props.closeModal()
-	}
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    await createDomain.mutate({
+      variables: {
+        input: inputs,
+      },
+    })
+    props.closeModal()
+  }
 
-	const titleId = shortId()
+  const titleId = shortId()
 
-	return (
-		h('form', { className: 'card', onSubmit },
-			h('div', { className: 'card__inner' },
+  return h(
+    'form',
+    { className: 'card', onSubmit },
+    h(
+      'div',
+      { className: 'card__inner' },
 
-				h(Spacer, { size: 0.5 }),
+      h(Spacer, { size: 0.5 }),
 
-				h(Label, { htmlFor: titleId }, 'Domain title'),
+      h(Label, { htmlFor: titleId }, 'Domain title'),
 
-				h(Input, {
-					type: 'text',
-					id: titleId,
-					required: true,
-					disabled: loading === true,
-					focused: true,
-					placeholder: 'Domain title',
-					value: inputs.title,
-					onChange: onInputChange('title'),
-				}),
+      h(Input, {
+        type: 'text',
+        id: titleId,
+        required: true,
+        disabled: loading === true,
+        focused: true,
+        placeholder: 'Domain title',
+        value: inputs.title,
+        onChange: onInputChange('title'),
+      }),
+    ),
+    h(
+      'div',
+      { className: 'card__footer' },
 
-			),
-			h('div', { className: 'card__footer' },
+      h(
+        'button',
+        {
+          type: 'button',
+          className: 'card__button link',
+          onClick: props.closeModal,
+        },
+        'Close',
+      ),
 
-				h('button', {
-					type: 'button',
-					className: 'card__button link',
-					onClick: props.closeModal,
-				}, 'Close'),
+      h('div', {
+        className: 'card__separator',
+      }),
 
-				h('div', {
-					className: 'card__separator',
-				}),
-
-				h('button', {
-					className: 'card__button card__button--primary link color-white',
-					disabled: loading === true,
-				}, loading === true ? h(Spinner) : 'Add'),
-
-			),
-		)
-	)
+      h(
+        'button',
+        {
+          className: 'card__button card__button--primary link color-white',
+          disabled: loading === true,
+        },
+        loading === true ? h(Spinner) : 'Add',
+      ),
+    ),
+  )
 }
 
 ModalDomainAdd.propTypes = {
-	...commonModalProps,
+  ...commonModalProps,
 }
 
 export default ModalDomainAdd

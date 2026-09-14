@@ -1,0 +1,108 @@
+### createDomain
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation createDomain($input: CreateDomainInput!) {
+  createDomain(input: $input) {
+    success
+    payload {
+      id
+      title
+    }
+  }
+}
+
+{
+  "input": {
+    "title": "Example"
+  }
+}
+
+### updateDomain
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation updateDomain($id: ID!, $input: UpdateDomainInput!) {
+  updateDomain(id: $id, input: $input) {
+    success
+    payload {
+      id
+      title
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}",
+  "input": {
+    "title": "Updated Example"
+  }
+}
+
+### fetchDomains
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchDomains {
+  domains {
+    id
+    title
+  }
+}
+
+### fetchDomain
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchDomain($id: ID!) {
+  domain(id: $id) {
+    id
+    title
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### deleteDomain
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation deleteDomain($id: ID!) {
+  deleteDomain(id: $id) {
+    success
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}

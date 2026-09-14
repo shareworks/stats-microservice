@@ -1,25 +1,26 @@
 import { gql } from '@apollo/client'
 
-import useQuery from '../../utils/useQuery'
-import viewsField from '../../fragments/viewsField'
-import enhanceViews from '../../../enhancers/enhanceViews'
+import enhanceViews from '../../../enhancers/enhanceViews.js'
+import viewsField from '../../fragments/viewsField.js'
+import useQuery from '../../utils/useQuery.js'
 
 const QUERY = gql`
-	query fetchMergedViews($interval: Interval!, $type: ViewType!, $limit: Int) {
-		statistics {
-			id
-			...viewsField
-		}
-	}
+  query fetchMergedViews($interval: Interval!, $type: ViewType!, $limit: Int) {
+    statistics {
+      id
+      ...viewsField
+    }
+  }
 
-	${ viewsField }
+  ${viewsField}
 `
 
-export default (filters) => {
-	const selector = (data) => data?.statistics.views
-	const enhancer = (value) => enhanceViews(value, filters.limit)
+export default (filters, options) => {
+  const selector = (data) => data?.statistics.views
+  const enhancer = (value) => enhanceViews(value, filters.limit)
 
-	return useQuery(QUERY, selector, enhancer, {
-		variables: filters,
-	})
+  return useQuery(QUERY, selector, enhancer, {
+    variables: filters,
+    ...options,
+  })
 }

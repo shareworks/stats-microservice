@@ -1,11 +1,6 @@
-'use strict'
+import mongoose from 'mongoose'
 
-const mongoose = require('mongoose')
-
-module.exports = (dbUrl) => mongoose.connect(dbUrl, {
-	useFindAndModify: false,
-	useNewUrlParser: true,
-	useCreateIndex: true,
-	useUnifiedTopology: true,
-	connectTimeoutMS: 60_000,
-})
+export default (dbUrl) =>
+  mongoose.connect(dbUrl, {
+    connectTimeoutMS: 60000,
+  })
