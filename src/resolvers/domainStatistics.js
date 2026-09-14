@@ -11,6 +11,7 @@ import requireAuth from '../middlewares/requireAuth.js'
 import domainIds from '../utils/domainIds.js'
 import pipe from '../utils/pipe.js'
 import recursiveId from '../utils/recursiveId.js'
+import { getAnalyticsOpts } from '../utils/analyticsOpts.js'
 
 export default {
   DomainStatistics: {
@@ -22,41 +23,50 @@ export default {
 
       return recursiveId(ids)
     }),
-    views: pipe(requireAuth, async (domain, { type, interval, limit }, { dateDetails }) => {
+    views: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { type, interval, limit } = args
       const ids = await domainIds(domain)
-      return getViews(ids, type, interval, limit, dateDetails)
+      return getViews(ids, type, interval, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    pages: pipe(requireAuth, async (domain, { sorting, range, limit }, { dateDetails }) => {
+    pages: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, range, limit } = args
       const ids = await domainIds(domain)
-      return getPages(ids, sorting, range, limit, dateDetails)
+      return getPages(ids, sorting, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    referrers: pipe(requireAuth, async (domain, { sorting, type, range, limit }, { dateDetails }) => {
+    referrers: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, type, range, limit } = args
       const ids = await domainIds(domain)
-      return getReferrers(ids, sorting, type, range, limit, dateDetails)
+      return getReferrers(ids, sorting, type, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    durations: pipe(requireAuth, async (domain, { interval, limit }, { dateDetails }) => {
+    durations: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { interval, limit } = args
       const ids = await domainIds(domain)
-      return getDurations(ids, interval, limit, dateDetails)
+      return getDurations(ids, interval, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    systems: pipe(requireAuth, async (domain, { sorting, type, range, limit }, { dateDetails }) => {
+    systems: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, type, range, limit } = args
       const ids = await domainIds(domain)
-      return getSystems(ids, sorting, type, range, limit, dateDetails)
+      return getSystems(ids, sorting, type, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    devices: pipe(requireAuth, async (domain, { sorting, type, range, limit }, { dateDetails }) => {
+    devices: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, type, range, limit } = args
       const ids = await domainIds(domain)
-      return getDevices(ids, sorting, type, range, limit, dateDetails)
+      return getDevices(ids, sorting, type, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    browsers: pipe(requireAuth, async (domain, { sorting, type, range, limit }, { dateDetails }) => {
+    browsers: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, type, range, limit } = args
       const ids = await domainIds(domain)
-      return getBrowsers(ids, sorting, type, range, limit, dateDetails)
+      return getBrowsers(ids, sorting, type, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    sizes: pipe(requireAuth, async (domain, { sorting, type, range, limit }, { dateDetails }) => {
+    sizes: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, type, range, limit } = args
       const ids = await domainIds(domain)
-      return getSizes(ids, sorting, type, range, limit, dateDetails)
+      return getSizes(ids, sorting, type, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
-    languages: pipe(requireAuth, async (domain, { sorting, range, limit }, { dateDetails }) => {
+    languages: pipe(requireAuth, async (domain, args, { dateDetails }) => {
+      const { sorting, range, limit } = args
       const ids = await domainIds(domain)
-      return getLanguages(ids, sorting, range, limit, dateDetails)
+      return getLanguages(ids, sorting, range, limit, dateDetails, getAnalyticsOpts(args))
     }),
   },
   Query: {

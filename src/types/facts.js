@@ -36,27 +36,27 @@ export default gql`
     """
     Number of visitors currently on your site.
     """
-    activeVisitors: UnsignedInt!
+    activeVisitors(organization: ID): UnsignedInt!
     """
     Details about the average number of views.
     """
-    averageViews: AverageViews!
+    averageViews(organization: ID, minDate: DateTime, maxDate: DateTime): AverageViews!
     """
     Details about the average visit duration.
     """
-    averageDuration: AverageDuration!
+    averageDuration(organization: ID, minDate: DateTime, maxDate: DateTime): AverageDuration!
     """
     Number of unique views today.
     """
-    viewsToday: UnsignedInt!
+    viewsToday(organization: ID): UnsignedInt!
     """
     Number of unique views this month.
     """
-    viewsMonth: UnsignedInt!
+    viewsMonth(organization: ID): UnsignedInt!
     """
     Number of unique views this year.
     """
-    viewsYear: UnsignedInt!
+    viewsYear(organization: ID): UnsignedInt!
   }
 
   type Query {

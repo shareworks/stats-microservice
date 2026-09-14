@@ -1,13 +1,13 @@
 import aggregateActiveVisitors from '../aggregations/aggregateActiveVisitors.js'
 import Record from '../models/Record.js'
 
-const getActiveVisitors = async (ids, dateDetails) => {
+const getActiveVisitors = async (ids, dateDetails, opts) => {
   const enhance = (entries) => {
     const entry = entries[0]
     return entry == null ? 0 : entry.count
   }
 
-  return enhance(await Record.aggregate(aggregateActiveVisitors(ids, dateDetails)))
+  return enhance(await Record.aggregate(aggregateActiveVisitors(ids, dateDetails, opts)))
 }
 
 export default getActiveVisitors

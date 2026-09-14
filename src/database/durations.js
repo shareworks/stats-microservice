@@ -7,9 +7,9 @@ import createArray from '../utils/createArray.js'
 import matchesDate from '../utils/matchesDate.js'
 import recursiveId from '../utils/recursiveId.js'
 
-const get = async (ids, interval, limit, dateDetails) => {
+const get = async (ids, interval, limit, dateDetails, opts) => {
   const aggregation = (() => {
-    return aggregateDurations(ids, interval, limit, dateDetails)
+    return aggregateDurations(ids, interval, limit, dateDetails, opts)
   })()
 
   const enhance = (entries) => {
@@ -18,7 +18,7 @@ const get = async (ids, interval, limit, dateDetails) => {
     const matchYear = [INTERVALS_DAILY, INTERVALS_MONTHLY, INTERVALS_YEARLY].includes(interval)
 
     return createArray(limit).map((_, index) => {
-      const date = dateDetails.lastFnByInterval(interval)(index)
+      const date = dateDetails.lastFnByInterval(interval)(index, opts?.maxDate)
 
       // Database entries include the day, month and year in the
       // timezone of the user. We therefore need to match it against a
