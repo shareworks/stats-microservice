@@ -3,8 +3,9 @@ import matchDomains from '../stages/matchDomains.js'
 import matchLimit from '../stages/matchLimit.js'
 import projectDuration from '../stages/projectDuration.js'
 import projectMinInterval from '../stages/projectMinInterval.js'
+import { applyAnalyticsOpts } from '../utils/analyticsOpts.js'
 
-export default (ids, interval, limit, dateDetails) => {
+export default (ids, interval, limit, dateDetails, opts) => {
   const aggregation = [
     matchDomains(ids),
     projectDuration(),
@@ -21,6 +22,7 @@ export default (ids, interval, limit, dateDetails) => {
   ]
 
   aggregation[0].$match.created = { $gte: dateDetails.includeFnByInterval(interval)(limit) }
+  applyAnalyticsOpts(aggregation[0].$match, opts)
 
   const dateExpression = { date: '$created', timezone: dateDetails.userTimeZone }
   const matchDay = [INTERVALS_DAILY].includes(interval)

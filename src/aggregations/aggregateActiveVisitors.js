@@ -1,7 +1,8 @@
 import { DURATIONS_INTERVAL, DURATIONS_LIMIT } from '../constants/durations.js'
 import matchDomains from '../stages/matchDomains.js'
+import { applyAnalyticsOpts } from '../utils/analyticsOpts.js'
 
-export default (ids, dateDetails) => {
+export default (ids, dateDetails, opts) => {
   const aggregation = [
     matchDomains(ids),
     {
@@ -21,6 +22,7 @@ export default (ids, dateDetails) => {
 
   // Ignore users that aren't active anymore
   aggregation[0].$match.updated = { $gte: dateDetails.lastMilliseconds(DURATIONS_INTERVAL * 2) }
+  applyAnalyticsOpts(aggregation[0].$match, opts)
 
   return aggregation
 }

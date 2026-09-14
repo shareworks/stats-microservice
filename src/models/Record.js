@@ -15,6 +15,10 @@ const schema = new mongoose.Schema({
     type: String,
     index: true,
   },
+  organization: {
+    type: mongoose.Schema.Types.ObjectId,
+    index: true,
+  },
   domainId: {
     type: String,
     required: true,

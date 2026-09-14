@@ -1,6 +1,7 @@
 import matchDomains from '../stages/matchDomains.js'
+import { applyAnalyticsOpts } from '../utils/analyticsOpts.js'
 
-export default (ids, properties, limit, or) => {
+export default (ids, properties, limit, or, opts) => {
   const aggregation = [
     matchDomains(ids),
     {
@@ -32,6 +33,8 @@ export default (ids, properties, limit, or) => {
     }
     aggregation[1].$group._id[property] = `$${property}`
   }
+
+  applyAnalyticsOpts(aggregation[0].$match, opts)
 
   return aggregation
 }

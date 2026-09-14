@@ -5,8 +5,9 @@ import {
   RANGES_LAST_7_DAYS,
 } from '../constants/ranges.js'
 import matchDomains from '../stages/matchDomains.js'
+import { applyAnalyticsOpts } from '../utils/analyticsOpts.js'
 
-export default (ids, properties, range, limit, dateDetails, or) => {
+export default (ids, properties, range, limit, dateDetails, or, opts) => {
   const aggregation = [
     matchDomains(ids),
     {
@@ -51,6 +52,8 @@ export default (ids, properties, range, limit, dateDetails, or) => {
   if (range === RANGES_LAST_6_MONTHS) {
     aggregation[0].$match.created = { $gte: dateDetails.lastMonths(6) }
   }
+
+  applyAnalyticsOpts(aggregation[0].$match, opts)
 
   return aggregation
 }

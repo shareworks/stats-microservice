@@ -17,6 +17,7 @@ const response = (entry) => ({
   browserVersion: entry.browserVersion,
   browserWidth: entry.browserWidth,
   browserHeight: entry.browserHeight,
+  organization: entry.organization,
   created: entry.created,
   updated: entry.updated,
 })
@@ -45,6 +46,7 @@ export const add = async (data) => {
       browserVersion: data.browserVersion,
       browserWidth: data.browserWidth,
       browserHeight: data.browserHeight,
+      organization: data.organization,
     }),
   )
 }

@@ -77,6 +77,10 @@ export default gql`
     Identifies the date and time when the object was updated.
     """
     updated: DateTime!
+    """
+    Organization associated with the tracked visit.
+    """
+    organization: ID
   }
 
   input CreateRecordInput {
@@ -140,6 +144,10 @@ export default gql`
     Height of the browser used by the user to visit the site.
     """
     browserHeight: UnsignedInt
+    """
+    Organization associated with the tracked visit.
+    """
+    organization: ID
   }
 
   type CreateRecordPayload {
