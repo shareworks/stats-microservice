@@ -51,7 +51,7 @@ const attachCorsHeaders = async (request, response, next) => {
     // Buddycheck's shared HTTP client sends its CSRF header on every request,
     // including direct read-only analytics queries. Allow it during CORS
     // preflight so the browser can make the authenticated GraphQL request.
-    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Time-Zone, X-CSRF-TOKEN')
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Time-Zone, Client-Time-Zone, X-CSRF-TOKEN')
     response.setHeader('Access-Control-Allow-Credentials', 'true')
     response.setHeader('Access-Control-Max-Age', '3600')
   }

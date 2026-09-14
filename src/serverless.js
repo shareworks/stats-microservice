@@ -23,7 +23,7 @@ const buildCorsHeaders = (allowedOrigin) => {
     'access-control-allow-methods': 'GET, POST, PATCH, OPTIONS',
     // Keep serverless deployments aligned with the Express server. Buddycheck
     // adds this CSRF header globally, so it must be accepted by preflight.
-    'access-control-allow-headers': 'Content-Type, Authorization, Time-Zone, X-CSRF-TOKEN',
+    'access-control-allow-headers': 'Content-Type, Authorization, Time-Zone, Client-Time-Zone, X-CSRF-TOKEN',
     'access-control-allow-credentials': 'true',
     'access-control-max-age': '3600',
   }
