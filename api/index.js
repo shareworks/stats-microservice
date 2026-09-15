@@ -1,12 +1,9 @@
-'use strict'
-
 /**
- * A serverless function handler for the '/api' route, for use with Vercel.
- * This handler follows the AWS Lambda API; Vercel deployments are opted-in
- * using the "NODEJS_AWS_HANDLER_NAME" environment variable defined in vercel.json.
+ * Vercel Serverless Function entry point for the '/api' route.
+ * Uses the fetch Web Standard supported by Vercel.
  *
- * See:
- *  - https://vercel.com/docs/serverless-functions/supported-languages#node.js
- *  - https://vercel.com/docs/runtimes#advanced-usage/advanced-node-js-usage/aws-lambda-api
+ * See: https://vercel.com/docs/functions/functions-api-reference
  */
-exports.handler = require('../src/serverless').handler
+import { handler } from '../src/serverless.js'
+
+export default { fetch: handler }

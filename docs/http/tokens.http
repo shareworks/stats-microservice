@@ -1,0 +1,40 @@
+### createToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation createToken($input: CreateTokenInput!) {
+  createToken(input: $input) {
+    success
+    payload {
+      id
+    }
+  }
+}
+
+{
+  "input": {
+    "username": "",
+    "password": ""
+  }
+}
+
+### deleteToken
+
+# @prompt accessToken
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+mutation deleteToken($id: ID!) {
+  deleteToken(id: $id) {
+    success
+  }
+}
+
+{
+  "id": "{{accessToken}}"
+}

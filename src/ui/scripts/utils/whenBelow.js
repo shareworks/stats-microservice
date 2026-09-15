@@ -1,3 +1,3 @@
 export default (num, max) => {
-	return num < max ? num : undefined
+  return num < max ? num : undefined
 }

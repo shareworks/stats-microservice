@@ -6,7 +6,7 @@ Thanks for taking the time to contribute to this project!
 
 There are multiple tasks you can do in order to help us, for example:
 
-- fill an issue to report bugs or your specific needs
+- file an issue to report bugs or your specific needs
 - contribute to existing issues
 - write a PR to improve the project
 
@@ -25,15 +25,25 @@ Once you're finished, push your branch to your repo and create a pull request!
 Simply run Ackee with `NODE_ENV` set to `development` to get access to the [GraphQL Playground](https://docs.ackee.electerious.com/#/docs/API#playground). You can do this by adding `NODE_ENV=development` to the environment of your `docker-compose.yml` or by running:
 
 ```sh
-yarn start:dev
+npm run dev
 ```
 
-## Linting
+## Code Quality
 
-[ESlint](https://eslint.org/) is used for linting. It's recommended to add the corresponding extension to your editor. It's also possible to run the `lint` task with the following command:
+### Linting and Formatting
+
+Ackee uses [ESLint](https://eslint.org/) for linting and [Prettier](https://prettier.io/) for code formatting. It's recommended to add the corresponding extensions to your editor.
+
+To check for linting and formatting issues, run:
 
 ```sh
-yarn lint
+npm run lint
+```
+
+To automatically fix linting issues and format your code before committing, run:
+
+```sh
+npm run format
 ```
 
 ## Testing
@@ -41,7 +51,7 @@ yarn lint
 To make sure your changes didn't break anything, use the `test` task to run all tests:
 
 ```sh
-yarn test
+npm run test
 ```
 
 That's it, happy coding!

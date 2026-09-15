@@ -1,61 +1,56 @@
-'use strict'
+import { readFile, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import path from 'node:path'
 
-const { resolve } = require('path')
-const { writeFile, readFile } = require('fs').promises
+import config from '../utils/config.js'
+import * as customTracker from '../utils/customTracker.js'
+import layout from '../utils/layout.js'
+import signale from '../utils/signale.js'
 
-const layout = require('../utils/layout')
-const config = require('../utils/config')
-const customTracker = require('../utils/customTracker')
-const signale = require('../utils/signale')
+const __dirname = import.meta.dirname
 
-const index = () => {
-	return layout('<div id="main"></div>', 'favicon.ico', [ 'index.css' ], [ 'index.js' ], {
-		isDemoMode: config.isDemoMode,
-		customTracker,
-	})
+export const index = () => {
+  return layout('<div id="main"></div>', 'favicon.ico', ['index.css'], ['index.js'], {
+    isDemoMode: config.isDemoMode,
+    customTracker,
+  })
 }
 
-const styles = () => {
-	const sass = require('rosid-handler-sass')
-	const filePath = resolve(__dirname, './styles/index.scss')
+export const styles = async () => {
+  const { default: sass } = await import('rosid-handler-sass')
+  const filePath = path.resolve(__dirname, './styles/index.scss')
 
-	return sass(filePath, { optimize: config.isDevelopmentMode === false })
+  return sass(filePath, { optimize: config.isDevelopmentMode === false })
 }
 
-const scripts = () => {
-	const js = require('rosid-handler-js-next')
-	const filePath = resolve(__dirname, './scripts/index.js')
+export const scripts = async () => {
+  const { default: js } = await import('rosid-handler-js-next')
+  const filePath = path.resolve(__dirname, './scripts/index.js')
 
-	return js(filePath, {
-		optimize: config.isDevelopmentMode === false,
-		nodeGlobals: config.isDevelopmentMode === true,
-		replace: { 'process.env.NODE_ENV': JSON.stringify(config.isDevelopmentMode === true ? 'development' : 'production') },
-		babel: false,
-	})
+  return js(filePath, {
+    optimize: config.isDevelopmentMode === false,
+    replace: {
+      'process.env.NODE_ENV': JSON.stringify(config.isDevelopmentMode === true ? 'development' : 'production'),
+    },
+    babel: false,
+  })
 }
 
-const tracker = () => {
-	const filePath = require.resolve('ackee-tracker')
+export const tracker = () => {
+  const require = createRequire(import.meta.url)
+  const filePath = require.resolve('ackee-tracker')
 
-	return readFile(filePath, 'utf8')
+  return readFile(filePath, 'utf8')
 }
 
-const build = async (path, fn) => {
-	try {
-		signale.await(`Building and writing '${ path }'`)
-		const data = await fn()
-		await writeFile(path, data)
-		signale.success(`Finished building '${ path }'`)
-	} catch (error) {
-		signale.fatal(error)
-		process.exit(1)
-	}
-}
-
-module.exports = {
-	index,
-	styles,
-	scripts,
-	tracker,
-	build,
+export const build = async (path, fn) => {
+  try {
+    signale.await(`Building and writing '${path}'`)
+    const data = await fn()
+    await writeFile(path, data)
+    signale.success(`Finished building '${path}'`)
+  } catch (error) {
+    signale.fatal(error)
+    process.exit(1)
+  }
 }

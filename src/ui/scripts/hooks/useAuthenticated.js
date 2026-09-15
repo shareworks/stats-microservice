@@ -1,14 +1,14 @@
-import isAuthenticationError from '../utils/isAuthenticationError'
+import isAuthenticationError from '../utils/isAuthenticationError.js'
 
 export default (token, errors, reset) => {
-	const hasToken = token != null
-	if (hasToken === false) return false
+  const hasToken = token != null
+  if (hasToken === false) return false
 
-	const hasAuthenticationError = errors.filter(isAuthenticationError).length > 0
-	if (hasAuthenticationError === true) {
-		reset()
-		return false
-	}
+  const hasAuthenticationError = errors.some(isAuthenticationError)
+  if (hasAuthenticationError === true) {
+    reset()
+    return false
+  }
 
-	return true
+  return true
 }

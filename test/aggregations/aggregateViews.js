@@ -1,20 +1,18 @@
-'use strict'
+import test from 'ava'
+import { randomUUID as uuid } from 'node:crypto'
 
-const test = require('ava')
-const uuid = require('uuid').v4
-
-const aggregateViews = require('../../src/aggregations/aggregateViews')
-const intervals = require('../../src/constants/intervals')
-const createDate = require('../../src/utils/createDate')
+import aggregateViews from '../../src/aggregations/aggregateViews.js'
+import { INTERVALS_DAILY } from '../../src/constants/intervals.js'
+import createDate from '../../src/utils/createDate.js'
 
 test('return unique aggregation', (t) => {
-	const result = aggregateViews(uuid(), true, intervals.INTERVALS_DAILY, 14, createDate())
+  const result = aggregateViews(uuid(), true, INTERVALS_DAILY, 14, createDate())
 
-	t.true(Array.isArray(result))
+  t.true(Array.isArray(result))
 })
 
 test('return non-unique aggregation', (t) => {
-	const result = aggregateViews(uuid(), false, intervals.INTERVALS_DAILY, 14, createDate())
+  const result = aggregateViews(uuid(), false, INTERVALS_DAILY, 14, createDate())
 
-	t.true(Array.isArray(result))
+  t.true(Array.isArray(result))
 })

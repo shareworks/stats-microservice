@@ -1,13 +1,7 @@
-'use strict'
+import normalizeUrl from 'normalize-url'
 
-const normalizeUrl = require('normalize-url')
-
-module.exports = (url) => normalizeUrl(url, {
-	removeDirectoryIndex: true,
-	removeQueryParameters: [
-		/^utm_\w+/i,
-		'ref',
-		'fbclid',
-		'source',
-	],
-})
+export default (url) =>
+  normalizeUrl(url, {
+    removeDirectoryIndex: true,
+    removeQueryParameters: [/^utm_\w+/i, 'ref', 'fbclid', 'source'],
+  })

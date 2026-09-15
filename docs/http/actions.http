@@ -1,0 +1,48 @@
+### createAction
+
+# @prompt eventId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation createAction($eventId: ID!, $input: CreateActionInput!) {
+  createAction(eventId: $eventId, input: $input) {
+    success
+    payload {
+      id
+      key
+      value
+    }
+  }
+}
+
+{
+  "eventId": "{{eventId}}",
+  "input": {
+    "key": "Action Key",
+    "value": 1
+  }
+}
+
+### updateAction
+
+# @prompt actionId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation updateAction($id: ID!, $input: UpdateActionInput!) {
+  updateAction(id: $id, input: $input) {
+    success
+  }
+}
+
+{
+  "id": "{{actionId}}",
+  "input": {
+    "key": "Updated Key",
+    "value": null
+  }
+}

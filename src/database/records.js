@@ -1,136 +1,111 @@
-'use strict'
-
-const Record = require('../models/Record')
+import Record from '../models/Record.js'
 
 const response = (entry) => ({
-	id: entry.id,
-	siteLocation: entry.siteLocation,
-	siteReferrer: entry.siteReferrer,
-	siteLanguage: entry.siteLanguage,
-	source: entry.source,
-	screenWidth: entry.screenWidth,
-	screenHeight: entry.screenHeight,
-	screenColorDepth: entry.screenColorDepth,
-	deviceName: entry.deviceName,
-	deviceManufacturer: entry.deviceManufacturer,
-	osName: entry.osName,
-	osVersion: entry.osVersion,
-	browserName: entry.browserName,
-	browserVersion: entry.browserVersion,
-	browserWidth: entry.browserWidth,
-	browserHeight: entry.browserHeight,
-	created: entry.created,
-	updated: entry.updated,
-
-	/** Customized **/
-	organization: entry.organization
-	/** Customized **/
-
+  id: entry.id,
+  siteLocation: entry.siteLocation,
+  siteReferrer: entry.siteReferrer,
+  siteLanguage: entry.siteLanguage,
+  source: entry.source,
+  screenWidth: entry.screenWidth,
+  screenHeight: entry.screenHeight,
+  screenColorDepth: entry.screenColorDepth,
+  deviceName: entry.deviceName,
+  deviceManufacturer: entry.deviceManufacturer,
+  osName: entry.osName,
+  osVersion: entry.osVersion,
+  browserName: entry.browserName,
+  browserVersion: entry.browserVersion,
+  browserWidth: entry.browserWidth,
+  browserHeight: entry.browserHeight,
+  organization: entry.organization,
+  created: entry.created,
+  updated: entry.updated,
 })
 
-/** Customized **/
-const all = async () => {
+export const add = async (data) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	const enhance = (entries) => {
-		return entries
-			.map(response)
-	}
-
-	return enhance(
-		await Record.find({})
-	)
-
-}
-/** Customized **/
-
-const add = async (data) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
-
-	return enhance(
-		await Record.create({
-			clientId: data.clientId,
-			domainId: data.domainId,
-			siteLocation: data.siteLocation,
-			siteReferrer: data.siteReferrer,
-			siteLanguage: data.siteLanguage,
-			source: data.source,
-			screenWidth: data.screenWidth,
-			screenHeight: data.screenHeight,
-			screenColorDepth: data.screenColorDepth,
-			deviceName: data.deviceName,
-			deviceManufacturer: data.deviceManufacturer,
-			osName: data.osName,
-			osVersion: data.osVersion,
-			browserName: data.browserName,
-			browserVersion: data.browserVersion,
-			browserWidth: data.browserWidth,
-			browserHeight: data.browserHeight,
-
-			/** Customized **/
-			organization: data.organization
-			/** Customized **/
-		})
-	)
+  return enhance(
+    await Record.create({
+      clientId: data.clientId,
+      domainId: data.domainId,
+      siteLocation: data.siteLocation,
+      siteReferrer: data.siteReferrer,
+      siteLanguage: data.siteLanguage,
+      source: data.source,
+      screenWidth: data.screenWidth,
+      screenHeight: data.screenHeight,
+      screenColorDepth: data.screenColorDepth,
+      deviceName: data.deviceName,
+      deviceManufacturer: data.deviceManufacturer,
+      osName: data.osName,
+      osVersion: data.osVersion,
+      browserName: data.browserName,
+      browserVersion: data.browserVersion,
+      browserWidth: data.browserWidth,
+      browserHeight: data.browserHeight,
+      organization: data.organization,
+    }),
+  )
 }
 
-const update = async (id) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const update = async (id) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Record.findOneAndUpdate({
-			id,
-		}, {
-			$set: {
-				updated: Date.now(),
-			},
-		}, {
-			new: true,
-		}),
-	)
+  return enhance(
+    await Record.findOneAndUpdate(
+      {
+        id,
+      },
+      {
+        $set: {
+          updated: Date.now(),
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    ),
+  )
 }
 
-const anonymize = async (clientId, ignoreId) => {
-	// Don't return anything about the update
-	await Record.updateMany({
-		$and: [
-			{ clientId },
-			{
-				id: {
-					$ne: ignoreId,
-				},
-			},
-		],
-	}, {
-		clientId: undefined,
-		siteLanguage: undefined,
-		screenWidth: undefined,
-		screenHeight: undefined,
-		screenColorDepth: undefined,
-		deviceName: undefined,
-		deviceManufacturer: undefined,
-		osName: undefined,
-		osVersion: undefined,
-		browserName: undefined,
-		browserVersion: undefined,
-		browserWidth: undefined,
-		browserHeight: undefined,
-	})
+export const anonymize = (clientId, ignoreId) => {
+  // Don't return anything about the update
+  return Record.updateMany(
+    {
+      $and: [
+        { clientId },
+        {
+          id: {
+            $ne: ignoreId,
+          },
+        },
+      ],
+    },
+    {
+      clientId: null,
+      siteLanguage: null,
+      screenWidth: null,
+      screenHeight: null,
+      screenColorDepth: null,
+      deviceName: null,
+      deviceManufacturer: null,
+      osName: null,
+      osVersion: null,
+      browserName: null,
+      browserVersion: null,
+      browserWidth: null,
+      browserHeight: null,
+    },
+  )
 }
 
-const del = (domainId) => {
-	return Record.deleteMany({
-		domainId,
-	})
-}
-
-module.exports = {
-	add,
-	update,
-	anonymize,
-	del,
-	all
+export const del = (domainId) => {
+  return Record.deleteMany({
+    domainId,
+  })
 }

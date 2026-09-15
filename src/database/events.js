@@ -1,78 +1,64 @@
-'use strict'
-
-const Event = require('../models/Event')
-const sortByProp = require('../utils/sortByProp')
+import Event from '../models/Event.js'
+import sortByProp from '../utils/sortByProp.js'
 
 const response = (entry) => ({
-	id: entry.id,
-	title: entry.title,
-	type: entry.type,
-	created: entry.created,
-	updated: entry.updated,
+  id: entry.id,
+  title: entry.title,
+  type: entry.type,
+  created: entry.created,
+  updated: entry.updated,
 })
 
-const add = async (data) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const add = async (data) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Event.create(data),
-	)
+  return enhance(await Event.create(data))
 }
 
-const all = async () => {
-	const enhance = (entries) => {
-		return entries
-			.map(response)
-			.sort(sortByProp('title'))
-	}
+export const all = async () => {
+  const enhance = (entries) => {
+    return entries.map(response).toSorted(sortByProp('title'))
+  }
 
-	return enhance(
-		await Event.find({}),
-	)
+  return enhance(await Event.find({}))
 }
 
-const get = async (id) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const get = async (id) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Event.findOne({ id }),
-	)
+  return enhance(await Event.findOne({ id }))
 }
 
-const update = async (id, data) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const update = async (id, data) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Event.findOneAndUpdate({
-			id,
-		}, {
-			$set: {
-				title: data.title,
-				type: data.type,
-				updated: Date.now(),
-			},
-		}, {
-			new: true,
-		}),
-	)
+  return enhance(
+    await Event.findOneAndUpdate(
+      {
+        id,
+      },
+      {
+        $set: {
+          title: data.title,
+          type: data.type,
+          updated: Date.now(),
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    ),
+  )
 }
 
-const del = (id) => {
-	return Event.findOneAndDelete({
-		id,
-	})
-}
-
-module.exports = {
-	add,
-	all,
-	get,
-	update,
-	del,
+export const del = (id) => {
+  return Event.findOneAndDelete({
+    id,
+  })
 }

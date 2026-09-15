@@ -1,38 +1,40 @@
-import { useEffect, useMemo, useCallback, useState } from 'react'
 import { createHashHistory } from 'history'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import routes, { defaultRoute } from '../constants/routes'
+import routes, { defaultRoute } from '../constants/routes.js'
 
 const parseLocation = ({ pathname }) => {
-	const hasRoute = routes.some((route) => route.pattern.match(pathname) != null,
-	)
+  const hasRoute = routes.some((route) => route.pattern.match(pathname) != null)
 
-	if (hasRoute === true) return pathname
-	return defaultRoute.pattern.stringify()
+  if (hasRoute === true) return pathname
+  return defaultRoute.pattern.stringify()
 }
 
 export default () => {
-	const history = useMemo(() => {
-		return createHashHistory()
-	}, [])
+  const history = useMemo(() => {
+    return createHashHistory()
+  }, [])
 
-	// Use the initial location
-	const [ route, setLocalPathname ] = useState(parseLocation(history.location))
+  // Use the initial location
+  const [route, setLocalPathname] = useState(parseLocation(history.location))
 
-	useEffect(() => {
-		// Store the location when the user navigates
-		return history.listen(({ location }) => {
-			setLocalPathname(parseLocation(location))
-		})
-	}, [ history ])
+  useEffect(() => {
+    // Store the location when the user navigates
+    return history.listen(({ location }) => {
+      setLocalPathname(parseLocation(location))
+    })
+  }, [history])
 
-	// Provide a simple wrapper for the push function
-	const setRoute = useCallback((pathname) => {
-		history.push({ pathname })
-	}, [ history ])
+  // Provide a simple wrapper for the push function
+  const setRoute = useCallback(
+    (pathname) => {
+      history.push({ pathname })
+    },
+    [history],
+  )
 
-	return {
-		setRoute,
-		route,
-	}
+  return {
+    setRoute,
+    route,
+  }
 }

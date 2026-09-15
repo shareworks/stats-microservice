@@ -1,48 +1,55 @@
-'use strict'
+import test from 'ava'
+import listen from 'test-listen'
 
-const test = require('ava')
-const listen = require('test-listen')
-
-const server = require('../../src/server')
-const { connectToDatabase, fillDatabase, cleanupDatabase, disconnectFromDatabase, api } = require('./_utils')
+import server from '../../src/server.js'
+import { api } from '../_utils.js'
+import { cleanup, cleanupDatabase, connectToDatabase, fillDatabase, gql } from './_utils.js'
 
 const base = listen(server)
 
 test.before(connectToDatabase)
-test.after.always(disconnectFromDatabase)
+test.after.always(cleanup(server))
 test.beforeEach(fillDatabase)
 test.afterEach.always(cleanupDatabase)
 
 test('fetch facts', async (t) => {
-	const body = {
-		query: `
-			query fetchFacts($id: ID!) {
-				domain(id: $id) {
-					facts {
-						id
-						activeVisitors
-						averageViews
-						averageDuration
-						viewsToday
-						viewsMonth
-						viewsYear
-					}
-				}
-			}
-		`,
-		variables: {
-			id: t.context.domain.id,
-		},
-	}
+  const body = {
+    query: gql`
+      query fetchFacts($id: ID!) {
+        domain(id: $id) {
+          facts {
+            id
+            activeVisitors
+            averageViews {
+              count
+              change
+            }
+            averageDuration {
+              count
+              change
+            }
+            viewsToday
+            viewsMonth
+            viewsYear
+          }
+        }
+      }
+    `,
+    variables: {
+      id: t.context.domain.id,
+    },
+  }
 
-	const { json } = await api(base, body, t.context.token.id)
-	const facts = json.data.domain.facts
+  const { json } = await api(base, body, t.context.token.id)
+  const facts = json.data.domain.facts
 
-	t.is(typeof facts.id, 'string')
-	t.is(facts.activeVisitors, 1)
-	t.is(facts.averageViews, 1)
-	t.is(facts.averageDuration, 60_000)
-	t.is(typeof facts.viewsToday, 'number')
-	t.is(typeof facts.viewsMonth, 'number')
-	t.is(typeof facts.viewsYear, 'number')
+  t.is(typeof facts.id, 'string')
+  t.is(facts.activeVisitors, 1)
+  t.is(facts.averageViews.count, 1)
+  t.is(facts.averageViews.change, 17)
+  t.is(facts.averageDuration.count, 55714)
+  t.is(facts.averageDuration.change, 17)
+  t.is(typeof facts.viewsToday, 'number')
+  t.is(typeof facts.viewsMonth, 'number')
+  t.is(typeof facts.viewsYear, 'number')
 })

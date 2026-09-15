@@ -1,12 +1,6 @@
-'use strict'
-
-const sanitizeFilename = require('sanitize-filename')
+import sanitizeFilename from 'sanitize-filename'
 
 const name = process.env.ACKEE_TRACKER
-const exists = name != null && name !== ''
-
-module.exports = {
-	exists,
-	url: exists === true ? `/${ encodeURIComponent(name) }.js` : undefined,
-	path: exists === true ? `${ sanitizeFilename(name) }.js` : undefined,
-}
+export const exists = name != null && name !== ''
+export const url = exists === true ? `/${encodeURIComponent(name)}.js` : undefined
+export const path = exists === true ? `${sanitizeFilename(name)}.js` : undefined

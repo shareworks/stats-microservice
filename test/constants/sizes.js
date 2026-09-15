@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const sizes = require('../../src/constants/sizes')
+import * as sizes from '../../src/constants/sizes.js'
 
 test('is an object', (t) => {
-	t.is(typeof sizes, 'object')
+  t.is(typeof sizes, 'object')
 })

@@ -1,14 +1,12 @@
-'use strict'
+import test from 'ava'
+import { randomUUID as uuid } from 'node:crypto'
 
-const test = require('ava')
-const uuid = require('uuid').v4
-
-const aggregateDurations = require('../../src/aggregations/aggregateDurations')
-const intervals = require('../../src/constants/intervals')
-const createDate = require('../../src/utils/createDate')
+import aggregateDurations from '../../src/aggregations/aggregateDurations.js'
+import { INTERVALS_DAILY } from '../../src/constants/intervals.js'
+import createDate from '../../src/utils/createDate.js'
 
 test('return aggregation', (t) => {
-	const result = aggregateDurations(uuid(), intervals.INTERVALS_DAILY, 14, createDate())
+  const result = aggregateDurations(uuid(), INTERVALS_DAILY, 14, createDate())
 
-	t.true(Array.isArray(result))
+  t.true(Array.isArray(result))
 })

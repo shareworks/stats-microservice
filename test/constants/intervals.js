@@ -1,9 +1,7 @@
-'use strict'
+import test from 'ava'
 
-const test = require('ava')
-
-const intervals = require('../../src/constants/intervals')
+import * as intervals from '../../src/constants/intervals.js'
 
 test('is an object', (t) => {
-	t.is(typeof intervals, 'object')
+  t.is(typeof intervals, 'object')
 })

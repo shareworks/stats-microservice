@@ -1,10 +1,10 @@
-'use strict'
+import test from 'ava'
+import signaleModule from 'signale'
 
-const test = require('ava')
-const { Signale } = require('signale')
+import signale from '../../src/utils/signale.js'
 
-const signale = require('../../src/utils/signale')
+const { Signale } = signaleModule
 
 test('is a Signale instance', (t) => {
-	t.true(signale instanceof Signale)
+  t.true(signale instanceof Signale)
 })

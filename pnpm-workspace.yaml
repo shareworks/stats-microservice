@@ -1,0 +1,5 @@
+allowBuilds:
+  '@apollo/protobufjs': true
+  '@parcel/watcher': true
+  mongodb-memory-server: true
+  unrs-resolver: true

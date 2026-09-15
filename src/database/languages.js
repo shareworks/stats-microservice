@@ -1,42 +1,36 @@
-'use strict'
+import aggregateNewRecords from '../aggregations/aggregateNewRecords.js'
+import aggregateRecentRecords from '../aggregations/aggregateRecentRecords.js'
+import aggregateTopRecords from '../aggregations/aggregateTopRecords.js'
+import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortings.js'
+import Record from '../models/Record.js'
+import languageCodes from '../utils/languageCodes.js'
+import recursiveId from '../utils/recursiveId.js'
 
-const Record = require('../models/Record')
-const aggregateTopRecords = require('../aggregations/aggregateTopRecords')
-const aggregateNewRecords = require('../aggregations/aggregateNewRecords')
-const aggregateRecentRecords = require('../aggregations/aggregateRecentRecords')
-const sortings = require('../constants/sortings')
-const languageCodes = require('../utils/languageCodes')
-const recursiveId = require('../utils/recursiveId')
+const get = async (ids, sorting, range, limit, dateDetails, opts) => {
+  const aggregation = (() => {
+    if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['siteLanguage'], range, limit, dateDetails, undefined, opts)
+    if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['siteLanguage'], limit, undefined, opts)
+    if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['siteLanguage'], limit, undefined, opts)
+  })()
 
-const get = async (ids, sorting, range, limit, dateDetails, opts = {}) => {
-	const aggregation = (() => {
-		if (sorting === sortings.SORTINGS_TOP) return aggregateTopRecords(ids, [ 'siteLanguage' ], range, limit, dateDetails, false, opts)
-		if (sorting === sortings.SORTINGS_NEW) return aggregateNewRecords(ids, [ 'siteLanguage' ], limit, false, opts)
-		if (sorting === sortings.SORTINGS_RECENT) return aggregateRecentRecords(ids, [ 'siteLanguage' ], limit, false, opts)
-	})()
+  const enhanceId = (id) => {
+    return languageCodes[id.siteLanguage] || id.siteLanguage
+  }
 
-	const enhanceId = (id) => {
-		return languageCodes[id.siteLanguage] || id.siteLanguage
-	}
+  const enhance = (entries) => {
+    return entries.map((entry) => {
+      const value = enhanceId(entry._id)
 
-	const enhance = (entries) => {
-		return entries.map((entry) => {
-			const value = enhanceId(entry._id)
+      return {
+        id: recursiveId([value, sorting, range, ...ids]),
+        value,
+        count: entry.count,
+        created: entry.created,
+      }
+    })
+  }
 
-			return {
-				id: recursiveId([ value, sorting, range, ...ids ]),
-				value,
-				count: entry.count,
-				created: entry.created,
-			}
-		})
-	}
-
-	return enhance(
-		await Record.aggregate(aggregation),
-	)
+  return enhance(await Record.aggregate(aggregation))
 }
 
-module.exports = {
-	get,
-}
+export default get

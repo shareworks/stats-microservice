@@ -1,130 +1,119 @@
-'use strict'
-
-const KnownError = require('../utils/KnownError')
-const normalizeUrl = require('../utils/normalizeUrl')
-const identifier = require('../utils/identifier')
-const messages = require('../utils/messages')
-const domains = require('../database/domains')
-const records = require('../database/records')
-const pipe = require('../utils/pipe')
-const requireAuth = require('../middlewares/requireAuth')
+import * as domains from '../database/domains.js'
+import * as records from '../database/records.js'
+import identifier from '../utils/identifier.js'
+import KnownError from '../utils/KnownError.js'
+import messages from '../utils/messages.js'
+import normalizeUrl from '../utils/normalizeUrl.js'
 
 const normalizeSiteLocation = (siteLocation) => {
-	if (siteLocation == null) {
-		// Pre-validate siteLocation and imitate MongoDB error
-		throw new KnownError(`Path \`siteLocation\` is required`)
-	}
+  if (siteLocation == null) {
+    // Pre-validate siteLocation and imitate MongoDB error
+    throw new KnownError(`Path \`siteLocation\` is required`)
+  }
 
-	try {
-		return normalizeUrl(siteLocation)
-	} catch (error) {
-		throw new KnownError(`Failed to normalize \`siteLocation\``, error)
-	}
+  try {
+    return normalizeUrl(siteLocation.toString())
+  } catch (error) {
+    throw new KnownError(`Failed to normalize \`siteLocation\``, error)
+  }
 }
 
 const normalizeSiteReferrer = (siteReferrer) => {
-	// The siteReferrer is optional
-	if (siteReferrer == null) return siteReferrer
+  // The siteReferrer is optional
+  if (siteReferrer == null) return siteReferrer
 
-	try {
-		return normalizeUrl(siteReferrer)
-	} catch (error) {
-		throw new KnownError(`Failed to normalize \`siteReferrer\``, error)
-	}
+  try {
+    return normalizeUrl(siteReferrer.toString())
+  } catch (error) {
+    throw new KnownError(`Failed to normalize \`siteReferrer\``, error)
+  }
 }
 
 const polish = (obj) => {
-	return Object.entries(obj).reduce((acc, [ key, value ]) => {
-		value = typeof value === 'string' ? value.trim() : value
-		value = value == null ? undefined : value
-		value = value === '' ? undefined : value
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    value = typeof value === 'string' ? value.trim() : value
+    value = value == null ? undefined : value
+    value = value === '' ? undefined : value
 
-		if (key === 'siteLocation') value = normalizeSiteLocation(value)
-		if (key === 'siteReferrer') value = normalizeSiteReferrer(value)
+    if (key === 'siteLocation') value = normalizeSiteLocation(value)
+    if (key === 'siteReferrer') value = normalizeSiteReferrer(value)
 
-		acc[key] = value
-		return acc
-	}, {})
+    acc[key] = value
+    return acc
+  }, {})
 }
 
-module.exports = {
-	/** Customized **/
-	Query: {
-		records: pipe(requireAuth, async () => {
+export default {
+  Mutation: {
+    createRecord: async (parent, { domainId, input }, { ip, userAgent, isIgnored }) => {
+      // Ignore your own records when logged in
+      if (isIgnored === true) {
+        return {
+          success: true,
+          payload: {
+            // Sentinel UUID returned for ignored (own) visits so the tracker
+            // receives a valid-looking response without persisting real data.
+            // This value is stable and matched in tests.
+            id: '88888888-8888-8888-8888-888888888888',
+          },
+        }
+      }
 
-			return records.all()
+      const clientId = identifier(ip, userAgent, domainId)
+      const data = polish({ ...input, clientId, domainId })
 
-		})
-	},
-	/** Customized **/
+      const domain = await domains.get(domainId)
 
-	Mutation: {
-		createRecord: async (parent, { domainId, input }, { ip, userAgent, isIgnored }) => {
-			// Ignore your own records when logged in
-			if (isIgnored === true) {
-				return {
-					success: true,
-					payload: {
-						id: '88888888-8888-8888-8888-888888888888',
-					},
-				}
-			}
+      if (domain == null) throw new KnownError('Unknown domain')
 
-			const clientId = identifier(ip, userAgent, domainId)
-			const data = polish({ ...input, clientId, domainId })
+      let entry
 
-			const domain = await domains.get(domainId)
+      try {
+        entry = await records.add(data)
+      } catch (error) {
+        if (error.name === 'ValidationError') {
+          throw new KnownError(messages(error.errors))
+        }
 
-			if (domain == null) throw new KnownError('Unknown domain')
+        throw error
+      }
 
-			let entry
+      // Anonymize old entries with the same clientId to prevent that the browsing history
+      // of a user is reconstructible. Will be skipped when there're no previous entries.
+      await records.anonymize(clientId, entry.id)
 
-			try {
-				entry = await records.add(data)
-			} catch (error) {
-				if (error.name === 'ValidationError') {
-					throw new KnownError(messages(error.errors))
-				}
+      return {
+        success: true,
+        payload: entry,
+      }
+    },
+    updateRecord: async (parent, { id }, { isIgnored }) => {
+      // Ignore your own records when logged in
+      if (isIgnored === true) {
+        return {
+          success: true,
+        }
+      }
 
-				throw error
-			}
+      let entry
 
-			// Anonymize old entries with the same clientId to prevent that the browsing history
-			// of a user is reconstructible. Will be skipped when there're no previous entries.
-			await records.anonymize(clientId, entry.id)
+      try {
+        entry = await records.update(id)
+      } catch (error) {
+        if (error.name === 'ValidationError') {
+          throw new KnownError(messages(error.errors))
+        }
 
-			return {
-				success: true,
-				payload: entry,
-			}
-		},
-		updateRecord: async (parent, { id }, { isIgnored }) => {
-			// Ignore your own records when logged in
-			if (isIgnored === true) {
-				return {
-					success: true,
-				}
-			}
+        throw error
+      }
 
-			let entry
+      if (entry == null) {
+        throw new KnownError('Unknown record')
+      }
 
-			try {
-				entry = await records.update(id)
-			} catch (error) {
-				if (error.name === 'ValidationError') {
-					throw new KnownError(messages(error.errors))
-				}
-
-				throw error
-			}
-
-			if (entry == null) {
-				throw new KnownError('Unknown record')
-			}
-
-			return {
-				success: true,
-			}
-		},
-	},
+      return {
+        success: true,
+      }
+    },
+  },
 }

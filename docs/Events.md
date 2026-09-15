@@ -37,28 +37,28 @@ Examples:
 
 ```js
 document.querySelector('#newsletter').addEventListener('click', () => {
-	instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
-		key: 'Subscription',
-		value: 1
-	})
+  instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
+    key: 'Subscription',
+    value: 1,
+  })
 })
 ```
 
 ```js
 document.querySelector('#buy').addEventListener('click', () => {
-	instance.action('513a082c-2cd5-4939-b417-72da2fe1761d', {
-		key: 'Checkout',
-		value: parseFloat(document.querySelector('#price'))
-	})
+  instance.action('513a082c-2cd5-4939-b417-72da2fe1761d', {
+    key: 'Checkout',
+    value: parseFloat(document.querySelector('#price')),
+  })
 })
 ```
 
 ```js
 setTimeout(() => {
-	instance.action('b7e1e5c9-e0a5-470e-bba0-ad8a295a3cfc', {
-		key: 'User on site for 5sec',
-		value: 1
-	})
+  instance.action('b7e1e5c9-e0a5-470e-bba0-ad8a295a3cfc', {
+    key: 'User on site for 5sec',
+    value: 1,
+  })
 }, 5000)
 ```
 
@@ -69,19 +69,23 @@ It's possible to update existing actions (e.g. when the user cancels a multi-ste
 ```js
 let actionId
 
-instance.action('1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3', {
-	key: 'Subscription',
-	value: 1
-}, (_actionId) => {
-	actionId = _actionId
-})
+instance.action(
+  '1b6e20cb-7c7d-48ca-8cb6-958a55d7a9e3',
+  {
+    key: 'Subscription',
+    value: 1,
+  },
+  (_actionId) => {
+    actionId = _actionId
+  },
+)
 ```
 
 You can then use the `actionId` to change both `key` and `value`. Even resetting an action value is possible by setting the value to `null`.
 
 ```js
 instance.updateAction(actionId, {
-	key: 'Subscription',
-	value: null
+  key: 'Subscription',
+  value: null,
 })
 ```

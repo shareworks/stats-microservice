@@ -62,7 +62,7 @@ Examples:
 
 - User visits three pages of a domain => The count increases by one
 - The same user visits your page at the end of the day => The count won't increase because the user is a returning user
-- The same user visits two pages a on the next day => The count increases by one because new day = new user
+- The same user visits two pages on the next day => The count increases by one because new day = new user
 
 ### What are total page views?
 

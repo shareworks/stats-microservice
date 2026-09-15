@@ -1,78 +1,66 @@
-'use strict'
-
-const Domain = require('../models/Domain')
-const sortByProp = require('../utils/sortByProp')
+import Domain from '../models/Domain.js'
+import sortByProp from '../utils/sortByProp.js'
 
 const response = (entry) => ({
-	id: entry.id,
-	title: entry.title,
-	created: entry.created,
-	updated: entry.updated,
+  id: entry.id,
+  title: entry.title,
+  created: entry.created,
+  updated: entry.updated,
 })
 
-const add = async (data) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const add = async (data) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Domain.create({
-			title: data.title,
-		}),
-	)
+  return enhance(
+    await Domain.create({
+      title: data.title,
+    }),
+  )
 }
 
-const all = async () => {
-	const enhance = (entries) => {
-		return entries
-			.map(response)
-			.sort(sortByProp('title'))
-	}
+export const all = async () => {
+  const enhance = (entries) => {
+    return entries.map(response).toSorted(sortByProp('title'))
+  }
 
-	return enhance(
-		await Domain.find({}),
-	)
+  return enhance(await Domain.find({}))
 }
 
-const get = async (id) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const get = async (id) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Domain.findOne({ id }),
-	)
+  return enhance(await Domain.findOne({ id }))
 }
 
-const update = async (id, data) => {
-	const enhance = (entry) => {
-		return entry == null ? entry : response(entry)
-	}
+export const update = async (id, data) => {
+  const enhance = (entry) => {
+    return entry == null ? entry : response(entry)
+  }
 
-	return enhance(
-		await Domain.findOneAndUpdate({
-			id,
-		}, {
-			$set: {
-				title: data.title,
-				updated: Date.now(),
-			},
-		}, {
-			new: true,
-		}),
-	)
+  return enhance(
+    await Domain.findOneAndUpdate(
+      {
+        id,
+      },
+      {
+        $set: {
+          title: data.title,
+          updated: Date.now(),
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    ),
+  )
 }
 
-const del = (id) => {
-	return Domain.findOneAndDelete({
-		id,
-	})
-}
-
-module.exports = {
-	add,
-	all,
-	get,
-	update,
-	del,
+export const del = (id) => {
+  return Domain.findOneAndDelete({
+    id,
+  })
 }

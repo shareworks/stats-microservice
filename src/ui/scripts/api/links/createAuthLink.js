@@ -1,16 +1,16 @@
-import { setContext } from '@apollo/client/link/context'
+import { SetContextLink } from '@apollo/client/link/context'
 
-import { get as getToken } from '../../hooks/useToken'
+import { get as getToken } from '../../hooks/useToken.js'
 
 export default () => {
-	return setContext((request, { headers }) => {
-		const token = getToken()
+  return new SetContextLink((prevContext) => {
+    const token = getToken()
 
-		return {
-			headers: {
-				...headers,
-				Authorization: `Bearer ${ token }`,
-			},
-		}
-	})
+    return {
+      headers: {
+        ...prevContext.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  })
 }

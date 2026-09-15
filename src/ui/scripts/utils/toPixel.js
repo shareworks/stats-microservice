@@ -1,1 +1,1 @@
-export default (num) => `${ Math.round(num) }px`
+export default (num) => `${Math.round(num)}px`

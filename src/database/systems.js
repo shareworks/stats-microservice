@@ -1,50 +1,44 @@
-'use strict'
+import aggregateNewRecords from '../aggregations/aggregateNewRecords.js'
+import aggregateRecentRecords from '../aggregations/aggregateRecentRecords.js'
+import aggregateTopRecords from '../aggregations/aggregateTopRecords.js'
+import { SORTINGS_NEW, SORTINGS_RECENT, SORTINGS_TOP } from '../constants/sortings.js'
+import { SYSTEMS_TYPE_NO_VERSION, SYSTEMS_TYPE_WITH_VERSION } from '../constants/systems.js'
+import Record from '../models/Record.js'
+import recursiveId from '../utils/recursiveId.js'
 
-const Record = require('../models/Record')
-const aggregateTopRecords = require('../aggregations/aggregateTopRecords')
-const aggregateNewRecords = require('../aggregations/aggregateNewRecords')
-const aggregateRecentRecords = require('../aggregations/aggregateRecentRecords')
-const sortings = require('../constants/sortings')
-const constants = require('../constants/systems')
-const recursiveId = require('../utils/recursiveId')
+const get = async (ids, sorting, type, range, limit, dateDetails, opts) => {
+  const aggregation = (() => {
+    if (type === SYSTEMS_TYPE_NO_VERSION) {
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName'], limit, undefined, opts)
+    }
+    if (type === SYSTEMS_TYPE_WITH_VERSION) {
+      if (sorting === SORTINGS_TOP) return aggregateTopRecords(ids, ['osName', 'osVersion'], range, limit, dateDetails, undefined, opts)
+      if (sorting === SORTINGS_NEW) return aggregateNewRecords(ids, ['osName', 'osVersion'], limit, undefined, opts)
+      if (sorting === SORTINGS_RECENT) return aggregateRecentRecords(ids, ['osName', 'osVersion'], limit, undefined, opts)
+    }
+  })()
 
-const get = async (ids, sorting, type, range, limit, dateDetails, opts = {}) => {
-	const aggregation = (() => {
-		if (type === constants.SYSTEMS_TYPE_NO_VERSION) {
-			if (sorting === sortings.SORTINGS_TOP) return aggregateTopRecords(ids, [ 'osName' ], range, limit, dateDetails, false, opts)
-			if (sorting === sortings.SORTINGS_NEW) return aggregateNewRecords(ids, [ 'osName' ], limit, false, opts)
-			if (sorting === sortings.SORTINGS_RECENT) return aggregateRecentRecords(ids, [ 'osName' ], limit, false, opts)
-		}
-		if (type === constants.SYSTEMS_TYPE_WITH_VERSION) {
-			if (sorting === sortings.SORTINGS_TOP) return aggregateTopRecords(ids, [ 'osName', 'osVersion' ], range, limit, dateDetails, false, opts)
-			if (sorting === sortings.SORTINGS_NEW) return aggregateNewRecords(ids, [ 'osName', 'osVersion' ], limit, false, opts)
-			if (sorting === sortings.SORTINGS_RECENT) return aggregateRecentRecords(ids, [ 'osName', 'osVersion' ], limit, false, opts)
-		}
-	})()
+  const enhanceId = (id) => {
+    if (type === SYSTEMS_TYPE_NO_VERSION) return `${id.osName}`
+    if (type === SYSTEMS_TYPE_WITH_VERSION) return `${id.osName} ${id.osVersion}`
+  }
 
-	const enhanceId = (id) => {
-		if (type === constants.SYSTEMS_TYPE_NO_VERSION) return `${ id.osName }`
-		if (type === constants.SYSTEMS_TYPE_WITH_VERSION) return `${ id.osName } ${ id.osVersion }`
-	}
+  const enhance = (entries) => {
+    return entries.map((entry) => {
+      const value = enhanceId(entry._id)
 
-	const enhance = (entries) => {
-		return entries.map((entry) => {
-			const value = enhanceId(entry._id)
+      return {
+        id: recursiveId([value, sorting, type, range, ...ids]),
+        value,
+        count: entry.count,
+        created: entry.created,
+      }
+    })
+  }
 
-			return {
-				id: recursiveId([ value, sorting, type, range, ...ids ]),
-				value,
-				count: entry.count,
-				created: entry.created,
-			}
-		})
-	}
-
-	return enhance(
-		await Record.aggregate(aggregation),
-	)
+  return enhance(await Record.aggregate(aggregation))
 }
 
-module.exports = {
-	get,
-}
+export default get

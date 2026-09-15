@@ -1,16 +1,19 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 
 export default (initialInputs) => {
-	const [ inputs, setInputs ] = useState(initialInputs)
+  const [inputs, setInputs] = useState(initialInputs)
 
-	const onChange = useCallback((key) => {
-		return (e) => {
-			setInputs((inputs) => ({
-				...inputs,
-				[key]: e.target.value,
-			}))
-		}
-	}, [ setInputs ])
+  const onChange = useCallback(
+    (key) => {
+      return (e) => {
+        setInputs((inputs) => ({
+          ...inputs,
+          [key]: e.target.value,
+        }))
+      }
+    },
+    [setInputs],
+  )
 
-	return [ inputs, onChange ]
+  return [inputs, onChange]
 }

@@ -1,0 +1,42 @@
+### createRecord
+
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation createRecord($domainId: ID!, $input: CreateRecordInput!) {
+  createRecord(domainId: $domainId, input: $input) {
+    success
+    payload {
+      id
+    }
+  }
+}
+
+{
+  "domainId": "{{domainId}}",
+  "input": {
+    "siteLocation": "https://example.com/",
+    "siteReferrer": "https://google.com/"
+  }
+}
+
+### updateRecord
+
+# @prompt recordId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation updateRecord($id: ID!) {
+  updateRecord(id: $id) {
+    success
+  }
+}
+
+{
+  "id": "{{recordId}}"
+}

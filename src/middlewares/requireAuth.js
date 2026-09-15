@@ -1,7 +1,5 @@
-'use strict'
-
-module.exports = (parent, args, { isAuthenticated }) => {
-	if (isAuthenticated !== true) {
-		throw isAuthenticated
-	}
+export default (parent, args, { isAuthenticated }) => {
+  if (isAuthenticated !== true) {
+    throw isAuthenticated
+  }
 }

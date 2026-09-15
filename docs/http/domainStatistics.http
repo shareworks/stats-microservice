@@ -1,0 +1,240 @@
+### browsers
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchBrowsers($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      browsers(sorting: TOP, type: NO_VERSION, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### devices
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchDevices($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      devices(sorting: TOP, type: NO_MODEL, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### durations
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchDurations($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      durations(interval: DAILY) {
+        value
+        count
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### languages
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchLanguages($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      languages(sorting: TOP, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### pages
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchPages($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      pages(sorting: TOP, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### referrers
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchReferrers($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      referrers(sorting: TOP, type: WITH_SOURCE, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### sizes
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchSizes($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      sizes(sorting: TOP, type: BROWSER_RESOLUTION, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### systems
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchSystems($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      systems(sorting: TOP, type: NO_VERSION, range: LAST_6_MONTHS) {
+        value
+        count
+        created
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
+
+### views
+
+# @prompt accessToken
+# @prompt domainId
+
+POST http://localhost:3000/api
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-REQUEST-TYPE: GraphQL
+
+query fetchViews($id: ID!) {
+  domain(id: $id) {
+    statistics {
+      id
+      views(interval: DAILY, type: UNIQUE) {
+        value
+        count
+      }
+    }
+  }
+}
+
+{
+  "id": "{{domainId}}"
+}
