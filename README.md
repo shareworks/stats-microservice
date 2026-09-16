@@ -1,106 +1,83 @@
-<div align="center">
+# Shareworks Stats Microservice
 
-<img src="https://s.electerious.com/images/ackee/icon.png" title="Ackee" alt="Ackee logo" width="128">
+The Shareworks Stats Microservice is a self-hosted analytics service based on
+[Ackee](https://github.com/electerious/Ackee). It provides the Ackee web UI,
+tracker, and GraphQL API, with Shareworks extensions for organization-scoped
+analytics.
 
-# Ackee
+## Shareworks extensions
 
-[![Test](https://github.com/electerious/Ackee/actions/workflows/test.yml/badge.svg)](https://github.com/electerious/Ackee/actions/workflows/test.yml) [![Mentioned in Awesome Selfhosted](https://awesome.re/mentioned-badge.svg)](https://github.com/awesome-selfhosted/awesome-selfhosted) [![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
+- Analytics records may include an optional `organization` ID.
+- Organization, date-range, and statistics filters are available through the
+  GraphQL API.
+- Browser clients should access the service through the Buddycheck Advantage
+  proxy. The proxy keeps the Ackee credential and organization authorization
+  on the server side.
 
-Self-hosted, Node.js based analytics tool for those who care about privacy. Ackee runs on your own server, analyzes the traffic of your websites and provides useful statistics in a minimal interface.
+See [CUSTOM_EXTENSIONS.md](CUSTOM_EXTENSIONS.md) for the complete extension
+behavior and security notes.
 
-[🌍 Website](https://ackee.electerious.com) | [🔮 Live Demo](https://demo.ackee.electerious.com) | [🧸 GraphQL Playground](https://demo.ackee.electerious.com/api)
+## Run locally
 
-<br/>
+Requirements: Node.js 24 or later and MongoDB.
 
-![Ackee in a browser](https://s.electerious.com/images/ackee/readme.png)
+1. Install dependencies with `npm ci`.
+2. Create a `.env` file:
 
-</div>
+   ```dotenv
+   ACKEE_MONGODB=mongodb://localhost:27017/ackee
+   ACKEE_USERNAME=username
+   ACKEE_PASSWORD=password
+   ```
 
-## 👋 Introduction
+3. Start the service with `npm run dev`.
 
-Ackee is a self-hosted analytics tool that cares about privacy. We believe that you don't need to track every aspect of your visitors. Ackee keeps tracked data anonymized to avoid that users are identifiable, while still providing helpful insights. It's the right tool for everyone who doesn't need a full-featured marketing analytics platform like Google Analytics or Matomo.
+The web UI is available at `http://localhost:3000`, and the GraphQL endpoint
+is `http://localhost:3000/api`.
 
-- **Self-hosted**: Ackee runs on your own server and is 100% open-source
-- **Modern technologies**: Lightweight Node.js and MongoDB architecture
-- **Beautiful**: Minimal and focused interface
-- **No cookies**: No unique user tracking and therefore no required cookie message
-- **Events**: Track button clicks, newsletter subscriptions and more
-- **GraphQL API**: Fully documented GraphQL API that allows you to build new tools upon Ackee
+For Docker Compose, set the same credentials in `.env` and run
+`docker compose up`.
 
-## 🚀 Get started
+## GraphQL API
 
-Get Ackee up and running…
+The service retains Ackee's GraphQL API. Authentication is required for
+analytics queries. The full upstream API reference is available in
+[docs/API.md](docs/API.md).
 
-- […with Docker Compose](docs/Get%20started.md#with-docker-compose)
-- […with Docker](docs/Get%20started.md#with-docker)
-- […with Helm](docs/Get%20started.md#with-helm)
-- […without Docker](docs/Get%20started.md#without-docker)
-- […with Netlify](docs/Get%20started.md#with-netlify)
-- […with Vercel](docs/Get%20started.md#with-vercel)
-- […with Heroku](docs/Get%20started.md#with-heroku)
-- […with Qovery](docs/Get%20started.md#with-qovery)
-- […with Render](docs/Get%20started.md#with-render)
-- […with Railway](docs/Get%20started.md#with-railway)
-- […with Koyeb](docs/Get%20started.md#with-koyeb)
-- […with Zeabur](docs/Get%20started.md#with-zeabur)
+Shareworks applications can associate a visit with an organization through
+`CreateRecordInput.organization` and apply these arguments to every
+`DomainStatistics` field:
 
-And configure Ackee and your server correctly…
+- `organization`: include only records for the supplied organization ID.
+- `minDate`: inclusive lower bound for a record's creation time.
+- `maxDate`: exclusive upper bound for a record's creation time.
 
-- […with environment variables](docs/Options.md)
-- […with SSL and HTTPS enabled](docs/SSL%20and%20HTTPS.md)
-- […with CORS headers](docs/CORS%20headers.md)
+`Facts` fields also accept `organization`; `averageViews` and
+`averageDuration` additionally accept `minDate` and `maxDate`. Supplying a
+date bound replaces Ackee's default rolling-window filter for the affected
+aggregation.
 
-Take a look at the [FAQ](docs/FAQ.md) if you have any questions left.
+These filters are not authorization controls. Callers must verify organization
+membership before querying the service.
 
-## 📚 Documentation
+## Configuration and development
 
-Documentation and guides are located in [the /docs folder](docs/). Also take a look at the [FAQ](docs/FAQ.md) if you have any questions left.
+Configuration uses environment variables. The essential variables are
+`ACKEE_MONGODB`, `ACKEE_USERNAME`, and `ACKEE_PASSWORD`; see
+[docs/Options.md](docs/Options.md) for all options.
 
-### API
+Useful commands:
 
-Ackee features a [GraphQL API](docs/API.md) that allows you to build custom tools upon Ackee. Everything you see in the UI is made from data delivered by the API.
+```sh
+npm run dev     # Run the development server
+npm run build   # Build frontend assets
+npm run lint    # Check linting and formatting
+npm test        # Run linting and AVA tests
+```
 
-### Options
+## Upstream
 
-Ackee uses environment variables and supports `.env` files in the root of the project if you want to store all variables in one file. [Options &#187;](docs/Options.md)
-
-## Miscellaneous
-
-### Donate
-
-I am working hard on continuously developing and maintaining Ackee. Please consider making a donation to keep the project going strong and me motivated.
-
-- [Become a GitHub sponsor](https://github.com/sponsors/electerious)
-- [Donate via PayPal](https://paypal.me/electerious)
-- [Buy me a coffee](https://www.buymeacoffee.com/electerious)
-
-### Articles
-
-- [Quit Google Analytics, Self-hosted Gatsby Statistics with Ackee](https://dev.to/aleccool213/quit-google-analytics-self-hosted-gatsby-statistics-with-ackee-4011)
-- [Getting Ackee up and running with Heroku 🇪🇸](https://rubenr.dev/blog/ackee-analitica-web-sencilla/)
-- [Why I Self-Host My Website Analytics](https://mbuffett.com/posts/why-i-self-host-my-analytics/)
-- [Beyond Google Analytics: Embrace Privacy with Ackee on Vercel](https://lev.engineer/blog/beyond-google-analytics-embrace-privacy-with-ackee-on-vercel)
-
-### Related
-
-- [ackee-tracker](https://github.com/electerious/ackee-tracker) - Transfer data to Ackee
-- [ackee-bitbar](https://github.com/electerious/ackee-bitbar) - Ackee stats in your macOS menu bar
-- [ackee-lighthouse](https://github.com/electerious/ackee-lighthouse) - Send Lighthouse reports to Ackee
-- [ackee-report](https://github.com/BetaHuhn/ackee-report) - CLI tool to generate performance reports
-- [gatsby-plugin-ackee-tracker](https://github.com/Burnsy/gatsby-plugin-ackee-tracker) - Gatsby plugin for Ackee
-- [Soapberry](https://wordpress.org/plugins/soapberry/) - WordPress plugin for Ackee
-- [Ackee-PHP](https://github.com/BrookeDot/ackee-php) - A PHP Class for Ackee
-- [use-ackee](https://github.com/electerious/use-ackee) - Use Ackee in React
-- [nuxt-ackee](https://github.com/bdrtsky/nuxt-ackee) - Nuxt.js module for Ackee
-- [ngx-ackee-wrapper](https://github.com/oakify/ngx-ackee-wrapper) - Angular wrapper for Ackee
-- [django-ackee-middleware](https://github.com/suda/django-ackee-middleware) - Django middleware for Ackee
-- [gridsome-plugin-ackee](https://github.com/DenzoNL/gridsome-plugin-ackee) - Gridsome plugin for Ackee
-- [vuepress-plugin-ackee](https://github.com/spekulatius/vuepress-plugin-ackee) - VuePress plugin for Ackee
-- [svelte-ackee](https://github.com/gaia-green-tech/svelte-ackee) - Svelte module for Ackee
-- [ackee_dart](https://github.com/marchellodev/ackee_dart) - Ackee plugin for Dart/Flutter ([pub.dev](https://pub.dev/packages/ackee_dart))
-- [ackee-tracker-consent](https://www.npmjs.com/package/ackee-tracker-consent) - A consent banner to activate detailed tracking on Ackee
-
-### Links
-
-- [Follow Ackee on Twitter](https://twitter.com/getackee)
-- [Vote for Ackee on ProductHunt](https://www.producthunt.com/posts/ackee)
+This repository contains Shareworks-specific changes on top of
+[Ackee](https://github.com/electerious/Ackee). Refer to the upstream project
+for general tracker usage, deployment guides, and the base product
+documentation.
